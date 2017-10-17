@@ -3,21 +3,21 @@
  */
 public class Token {
 
-    private String value;
+    private String tokenValue;
     private TokenType tokenType;
 
-    public Token(char value, TokenType tokenType){
-        this.value = String.valueOf(value);
+    public Token(char tokenValue, TokenType tokenType){
+        this.tokenValue = String.valueOf(tokenValue);
         this.tokenType = tokenType;
     }
 
-    public Token(String value, TokenType tokenType){
-        this.value = value;
+    public Token(String tokenValue, TokenType tokenType){
+        this.tokenValue = tokenValue;
         this.tokenType = tokenType;
     }
 
-    public String getValue(){
-        return value;
+    public String getTokenValue(){
+        return tokenValue;
     }
 
     public TokenType getTokenType(){

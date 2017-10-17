@@ -1,6 +1,4 @@
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * Created by splbap on 2017-10-13.
@@ -9,15 +7,17 @@ public class FileHandler {
 
     public static void main(String[] args) {
         FileHandler fileHandler = new FileHandler("inputFile.txt", "outputFile.txt");
-        int c;
-        while ((c = fileHandler.nextChar()) != -1) {
-            System.out.println((char) c);
+        Lexer lexer = new Lexer(fileHandler);
+        Token token;
+        while ((token = lexer.nextToken()).getTokenType() != TokenType.EOF) {
+            System.out.println(token.getTokenValue());
         }
         fileHandler.closeFiles();
     }
 
-    private FileReader inputStream = null;
-    private FileWriter outputStream = null;
+    private InputStream inputStream = null;
+    private OutputStream outputStream = null;
+    private BufferedInputStream bufferedInputStream = null;
 
     public FileHandler(String inputFile, String outputFile) {
         openFiles(inputFile, outputFile);
@@ -30,7 +30,8 @@ public class FileHandler {
 
     private void openInputFile(String inputFile) {
         try {
-            inputStream = new FileReader(inputFile);
+            inputStream = new FileInputStream(inputFile);
+            bufferedInputStream = new BufferedInputStream(inputStream);
         } catch (IOException ioe) {
             System.out.println("Blad otwarcia pliku wejsciowego.");
         }
@@ -38,7 +39,7 @@ public class FileHandler {
 
     private void openOutputFile(String outputFile) {
         try {
-            outputStream = new FileWriter(outputFile);
+            outputStream = new FileOutputStream(outputFile);
         } catch (IOException ioe) {
             System.out.println("Blad otwarcia pliku wyjsciowego.");
         }
@@ -47,11 +48,23 @@ public class FileHandler {
     public int nextChar() {
         int ascii = -1;
         try {
-            ascii = inputStream.read();
+            ascii = bufferedInputStream.read();
         } catch (IOException ioe) {
             System.out.println("Blad odczytu pliku wejsciowego.");
         }
         return ascii;
+    }
+
+    public void mark(){
+        bufferedInputStream.mark(10);
+    }
+
+    public void reset(){
+        try {
+            bufferedInputStream.reset();
+        } catch (IOException ioe) {
+            System.out.println("Blad resetowania znacznika pliku wejsciowego.");
+        }
     }
 
     public void closeFiles() {
@@ -61,8 +74,8 @@ public class FileHandler {
 
     private void closeInputFile() {
         try {
-            if (inputStream != null) {
-                inputStream.close();
+            if (bufferedInputStream != null) {
+                bufferedInputStream.close();
             }
         } catch (IOException ioe) {
             System.out.println("Blad zamkniecia pliku wejsciowego.");

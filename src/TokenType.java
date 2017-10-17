@@ -11,5 +11,7 @@ public enum TokenType {
     SEMICOLON,
     STRING,
     NUMBER,
-    LITERAL
+    LITERAL,
+    ERROR,
+    EOF
 }
