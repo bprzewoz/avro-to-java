@@ -3,5 +3,5 @@
   "numberTest": 0.1876,
   "numberTest": 182.10992,
   "numberTest": 100,
-  "numberTest": 0
+  "numberTest: 0
 }

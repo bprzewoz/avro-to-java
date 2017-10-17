@@ -55,11 +55,11 @@ public class FileHandler {
         return ascii;
     }
 
-    public void mark(){
+    public void mark() {
         bufferedInputStream.mark(10);
     }
 
-    public void reset(){
+    public void reset() {
         try {
             bufferedInputStream.reset();
         } catch (IOException ioe) {

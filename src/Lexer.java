@@ -1,4 +1,7 @@
-import java.util.EmptyStackException;
+import org.omg.CORBA.DynAnyPackage.Invalid;
+import exceptions.InvalidTokenException;
+
+import java.io.EOFException;
 
 /**
  * Created by splbap on 2017-10-11.
@@ -53,11 +56,9 @@ public class Lexer {
             } else if (isLetter(c)) {
                 return new Token(readLiteral(c), TokenType.LITERAL);
             } else {
-                throw new Exception();
+                throw new InvalidTokenException(c);
             }
-        } catch (Exception e) {
-            System.out.println("INVALID TOKEN");
-            System.exit(0);
+        } catch (InvalidTokenException e) {
             return null;
         }
     }
@@ -74,34 +75,38 @@ public class Lexer {
         return c >= '0' && c <= '9';
     }
 
-    private String readString() {
+    private String readString() throws InvalidTokenException {
         char c;
         String string = "";
         while ((c = nextChar()) != '"') {
+            if (endOfFile) {
+                throw new InvalidTokenException();
+            }
             string += c;
         }
         return string;
     }
 
-    private String readNumber(char c) throws Exception { // do poprawienia - bardziej skomplikowane
+    private String readNumber(char c) throws InvalidTokenException {
         String string = String.valueOf(c);
-        if(c == '0'){
+        if (c == '0') {
             fileHandler.mark();
-            if((c = nextChar()) == '.'){
+            if ((c = nextChar()) == '.') {
                 string += c;
                 string += readDigit();
                 return string;
-            } else if(!isDigit(c)){
+            } else if (!isDigit(c)) {
                 fileHandler.reset();
                 return string;
-            }else{
-                throw new Exception();
+            } else {
+                string += c;
+                throw new InvalidTokenException(string, TokenType.NUMBER.toString());
             }
         } else {
             string += readDigit();
             fileHandler.mark();
-            if((c = nextChar()) == '.') {
-                string += c;
+            if ((c = nextChar()) == '.' && isDigit(c = nextChar())) {
+                string += Character.toString('.') + Character.toString(c);
                 string += readDigit();
             } else {
                 fileHandler.reset();
@@ -122,7 +127,7 @@ public class Lexer {
         return string;
     }
 
-    private String readLiteral(char c) throws Exception {
+    private String readLiteral(char c) throws InvalidTokenException {
         String string = "";
         while (isLetter(c)) {
             string += c;
@@ -132,10 +137,10 @@ public class Lexer {
         fileHandler.reset();
         string = string.toLowerCase();
 
-        if(string == "true" || string == "false" || string == "null") {
+        if (string == "true" || string == "false" || string == "null") {
             return string;
         } else {
-            throw new Exception();
+            throw new InvalidTokenException(string, TokenType.LITERAL.toString());
         }
     }
 
