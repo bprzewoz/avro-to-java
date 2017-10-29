@@ -1,4 +1,5 @@
 {
     "description" : "Illegal empty exponent.",
-    "value" : 2e
+    "value" : 2e,
+    "code" : 200
 }

@@ -2,7 +2,7 @@
     "test1" : -123,
     "test2" : -0.780,
     "test3" : -12.870,
-    "test4" : 0,
+    "test4" : 2e,
     "test5A" : -A,
     "test5B" : "str\uaaaaing",
     "test5C" : "str\uAAAAing",

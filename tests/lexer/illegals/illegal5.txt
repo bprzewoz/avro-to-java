@@ -1,4 +1,5 @@
 {
     "description" : "Unterminated string.",
-    "value" : "hi
+    "value" : "hi,
+    "code" : 500
 }

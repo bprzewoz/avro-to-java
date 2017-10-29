@@ -1,4 +1,5 @@
 {
     "description" : "Unescaped ASCII control characters are not permitted.",
-    "value" : "\0"
+    "value" : "/0",
+    "code" : 800
 }

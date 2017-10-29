@@ -1,4 +1,5 @@
 {
     "description" : "Unrecognized token.",
-    "value" : undefined
+    "value" : undefined,
+    "code" : 900
 }

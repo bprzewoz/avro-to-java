@@ -1,4 +1,0 @@
-{
-    "description" : "Invalid Unicode escape sequence",
-    "value" : "\\u00G0"
-}

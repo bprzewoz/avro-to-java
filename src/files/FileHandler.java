@@ -16,15 +16,21 @@ public class FileHandler {
         Lexer lexer = new Lexer(fileHandler);
         Token token;
         while ((token = lexer.nextToken()).getTokenType() != TokenType.EOF) {
+            if(token.getTokenType() == TokenType.ERROR){
+                break;
+            }
             System.out.println(token.getTokenValue());
         }
-        System.out.println(token.getTokenValue());
         fileHandler.closeFiles();
     }
 
     private InputStream inputStream = null;
     private OutputStream outputStream = null;
     private BufferedInputStream bufferedInputStream = null;
+
+    public FileHandler(String inputFile) {
+        openInputFile(inputFile);
+    }
 
     public FileHandler(String inputFile, String outputFile) {
         openFiles(inputFile, outputFile);

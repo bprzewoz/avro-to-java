@@ -24,8 +24,8 @@ public class Lexer {
 
     private char nextChar() {
         int i = fileHandler.nextChar();
+        char c = (i == 13) ? '\n' : (char) i;
         endOfFile = (i == -1);
-        char c = (char) i;
         if (c == '\n') {
             row++;
             column = 1;
@@ -80,13 +80,11 @@ public class Lexer {
             } else if (isLetter(currentChar)) {
                 return new Token(row, column, readLiteral(), TokenType.LITERAL);
             } else {
-                throw new InvalidTokenException(currentChar);
+                throw new InvalidTokenException(900, currentChar);
             }
         } catch (InvalidTokenException invalidTokenException) {
-            System.out.print("[" + row + ", " + column + "] ");
-            invalidTokenException.printMessage();
-            System.exit(-1);
-            return null;
+            System.out.println("[" + row + ", " + column + "] " + invalidTokenException.getMessage());
+            return new Token(row, column, "ERROR", TokenType.ERROR);
         }
     }
 
@@ -106,11 +104,17 @@ public class Lexer {
         return isDigit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
     }
 
+    private boolean isSpecialCharacter(char c) {
+        return c == '/' || c == '\b' || c == '\f' || c == '\n' || c == '\r' || c == '\t';
+    }
+
     private String readString() throws InvalidTokenException {
         String string = "";
         while ((currentChar = nextChar()) != '"') {
             if (endOfFile) { // BRAK DOMKNIECIA
-                throw new InvalidTokenException();
+                throw new InvalidTokenException(500, string, TokenType.STRING.toString());
+            } else if (isSpecialCharacter(currentChar)) {
+                throw new InvalidTokenException(800, string + currentChar, TokenType.STRING.toString());
             } else if (currentChar == '\\') { // ZNAKI SPECJALNE
                 currentChar = nextChar();
                 if (currentChar == '"') {
@@ -134,14 +138,14 @@ public class Lexer {
                         hexadecimal += currentChar;
                         if (!isHexadecimalDigit(currentChar)) {
                             string += "\\u" + hexadecimal;
-                            throw new InvalidTokenException(string, TokenType.STRING.toString());
+                            throw new InvalidTokenException(700, string, TokenType.STRING.toString());
                         }
                     }
                     string += Integer.parseInt(hexadecimal, 16);
                 } else if (currentChar == 't') {
                     string += '\t';
                 } else {
-                    throw new InvalidTokenException(string, TokenType.STRING.toString());
+                    throw new InvalidTokenException(600, string, TokenType.STRING.toString());
                 }
             } else {
                 string += currentChar;
@@ -161,7 +165,7 @@ public class Lexer {
             currentChar = nextChar();
             if (!isDigit(currentChar)) {
                 string += currentChar;
-                throw new InvalidTokenException(string, TokenType.NUMBER.toString());
+                throw new InvalidTokenException(400, string, TokenType.NUMBER.toString());
             }
         }
 
@@ -172,7 +176,7 @@ public class Lexer {
                 return string;
             } else if (currentChar != '.' && currentChar != 'e' && currentChar != 'E') {
                 string += currentChar;
-                throw new InvalidTokenException(string, TokenType.NUMBER.toString());
+                throw new InvalidTokenException(100, string, TokenType.NUMBER.toString());
             }
         } else {
             string += readDigit();
@@ -186,7 +190,7 @@ public class Lexer {
                 string += readDigit();
             } else {
                 string += currentChar;
-                throw new InvalidTokenException(string, TokenType.NUMBER.toString());
+                throw new InvalidTokenException(300, string, TokenType.NUMBER.toString());
             }
         }
 
@@ -202,7 +206,7 @@ public class Lexer {
                 string += readDigit();
             } else {
                 string += currentChar;
-                throw new InvalidTokenException(string, TokenType.NUMBER.toString());
+                throw new InvalidTokenException(200, string, TokenType.NUMBER.toString());
             }
         }
 
@@ -230,9 +234,9 @@ public class Lexer {
                     string += currentChar;
                     if ('e' == (currentChar = nextChar())) {
                         string += currentChar;
+                        return string;
                     } else {
                         string += currentChar;
-                        throw new InvalidTokenException(string, TokenType.LITERAL.toString());
                     }
                 }
             }
@@ -246,9 +250,9 @@ public class Lexer {
                         string += currentChar;
                         if ('e' == (currentChar = nextChar())) {
                             string += currentChar;
+                            return string;
                         } else {
                             string += currentChar;
-                            throw new InvalidTokenException(string, TokenType.LITERAL.toString());
                         }
                     }
                 }
@@ -261,16 +265,16 @@ public class Lexer {
                     string += currentChar;
                     if ('l' == (currentChar = nextChar())) {
                         string += currentChar;
+                        return string;
                     } else {
                         string += currentChar;
-                        throw new InvalidTokenException(string, TokenType.LITERAL.toString());
                     }
                 }
             }
         }
 
         currentChar = nextChar();
-        return string;
+        throw new InvalidTokenException(900, string, TokenType.LITERAL.toString());
     }
 
 }
