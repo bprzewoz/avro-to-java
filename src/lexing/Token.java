@@ -7,20 +7,12 @@ public class Token {
 
     private int row;
     private int column;
+    private int hashValue;
     private String tokenValue;
     private TokenType tokenType;
 
-    public Token(int row, int column, TokenType tokenType) {
-        this.row = row;
-        this.column = column;
-        this.tokenType = tokenType;
-    }
-
     public Token(int row, int column, char tokenValue, TokenType tokenType) {
-        this.tokenValue = String.valueOf(tokenValue);
-        this.tokenType = tokenType;
-        this.column = column;
-        this.row = row;
+        this(row, column, String.valueOf(tokenValue), tokenType);
     }
 
     public Token(int row, int column, String tokenValue, TokenType tokenType) {
@@ -28,18 +20,25 @@ public class Token {
         this.tokenType = tokenType;
         this.column = column;
         this.row = row;
+
+        if (tokenType == TokenType.STRING) {
+            hashValue = calculateHash(tokenValue);
+        }
     }
 
     public String getTokenValue() {
         return tokenValue;
     }
 
-    public void setTokenValue(String tokenValue) {
-        this.tokenValue = tokenValue;
-    }
-
     public TokenType getTokenType() {
         return tokenType;
     }
 
+    private int calculateHash(String string) {
+        int hash = 7;
+        for (int i = 0; i < string.length(); i++) {
+            hash = hash * 31 + string.charAt(i);
+        }
+        return hash;
+    }
 }

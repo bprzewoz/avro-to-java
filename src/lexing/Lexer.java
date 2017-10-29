@@ -133,16 +133,14 @@ public class Lexer {
                 } else if (currentChar == 'r') {
                     string += '\r';
                 } else if (currentChar == 'u') { // LICZBA SZESNASTKOWA
-                    String hexadecimal = "";
+                    string += "\\u";
                     for (int i = 0; i < 4; i++) {
                         currentChar = nextChar();
-                        hexadecimal += currentChar;
+                        string += currentChar;
                         if (!isHexadecimalDigit(currentChar)) {
-                            string += "\\u" + hexadecimal;
                             throw new InvalidTokenException(700, string, TokenType.STRING.toString());
                         }
                     }
-                    string += Integer.parseInt(hexadecimal, 16);
                 } else if (currentChar == 't') {
                     string += '\t';
                 } else {
@@ -150,7 +148,6 @@ public class Lexer {
                 }
             } else {
                 string += currentChar;
-                // hash+=c;
             }
         }
         currentChar = nextChar();
@@ -229,7 +226,7 @@ public class Lexer {
         if ('t' == currentChar) {
             currentChar = nextChar();
             string += currentChar;
-            if ('r' == currentChar){
+            if ('r' == currentChar) {
                 currentChar = nextChar();
                 string += currentChar;
                 if ('u' == currentChar) {
@@ -246,13 +243,13 @@ public class Lexer {
             if ('a' == currentChar) {
                 currentChar = nextChar();
                 string += currentChar;
-                if ('l' == currentChar){
+                if ('l' == currentChar) {
                     currentChar = nextChar();
                     string += currentChar;
                     if ('s' == currentChar) {
                         currentChar = nextChar();
                         string += currentChar;
-                        if ('e' == currentChar){
+                        if ('e' == currentChar) {
                             validLiteral = true;
                         }
                     }
@@ -281,5 +278,4 @@ public class Lexer {
             throw new InvalidTokenException(900, string, TokenType.LITERAL.toString());
         }
     }
-
 }

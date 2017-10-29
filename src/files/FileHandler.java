@@ -11,19 +11,6 @@ import java.io.*;
  */
 public class FileHandler {
 
-    public static void main(String[] args) {
-        FileHandler fileHandler = new FileHandler("inputFile.txt", "outputFile.txt");
-        Lexer lexer = new Lexer(fileHandler);
-        Token token;
-        while ((token = lexer.nextToken()).getTokenType() != TokenType.EOF) {
-            if(token.getTokenType() == TokenType.ERROR){
-                break;
-            }
-            System.out.println(token.getTokenValue());
-        }
-        fileHandler.closeFiles();
-    }
-
     private InputStream inputStream = null;
     private OutputStream outputStream = null;
     private BufferedInputStream bufferedInputStream = null;
@@ -34,6 +21,19 @@ public class FileHandler {
 
     public FileHandler(String inputFile, String outputFile) {
         openFiles(inputFile, outputFile);
+    }
+
+    public static void main(String[] args) {
+        FileHandler fileHandler = new FileHandler("inputFile.txt", "outputFile.txt");
+        Lexer lexer = new Lexer(fileHandler);
+        Token token;
+        while ((token = lexer.nextToken()).getTokenType() != TokenType.EOF) {
+            if (token.getTokenType() == TokenType.ERROR) {
+                break;
+            }
+            System.out.println(token.getTokenValue());
+        }
+        fileHandler.closeFiles();
     }
 
     private void openFiles(String inputFile, String outputFile) {

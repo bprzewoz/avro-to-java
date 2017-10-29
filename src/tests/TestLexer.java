@@ -10,10 +10,6 @@ import lexing.TokenType;
  */
 public class TestLexer {
 
-    public static void main(String[] args) {
-        TestLexer testLexer = new TestLexer();
-    }
-
     private final String RESET = "\u001B[0m";
     private final String RED = "\u001B[31m";
     private final String GREEN = "\u001B[32m";
@@ -22,6 +18,10 @@ public class TestLexer {
 
     public TestLexer() {
         test();
+    }
+
+    public static void main(String[] args) {
+        TestLexer testLexer = new TestLexer();
     }
 
     public void test() {
@@ -39,7 +39,7 @@ public class TestLexer {
             Token token = null;
             boolean passed = true;
             String fileName = type + i + ".txt";
-            FileHandler fileHandler = new FileHandler(String.format("tests/lexer/%ss/%s",type, fileName));
+            FileHandler fileHandler = new FileHandler(String.format("tests/lexer/%ss/%s", type, fileName));
             Lexer lexer = new Lexer(fileHandler);
             while ((token = lexer.nextToken()).getTokenType() != TokenType.EOF) {
                 if (token.getTokenType() == TokenType.ERROR) {
