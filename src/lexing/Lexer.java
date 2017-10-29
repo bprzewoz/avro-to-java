@@ -80,10 +80,11 @@ public class Lexer {
             } else if (isLetter(currentChar)) {
                 return new Token(row, column, readLiteral(), TokenType.LITERAL);
             } else {
+                System.out.println((int) currentChar + "," + currentChar);
                 throw new InvalidTokenException(900, currentChar);
             }
         } catch (InvalidTokenException invalidTokenException) {
-            System.out.println("[" + row + ", " + column + "] " + invalidTokenException.getMessage());
+            System.out.println("[ROW " + row + ", COL " + column + "] " + invalidTokenException.getMessage());
             return new Token(row, column, "ERROR", TokenType.ERROR);
         }
     }
@@ -224,57 +225,63 @@ public class Lexer {
     }
 
     private String readLiteral() throws InvalidTokenException {
-        String string = "";
+        String string = String.valueOf(currentChar);
+        boolean validLiteral = false;
 
         if ('t' == currentChar) {
+            currentChar = nextChar();
             string += currentChar;
-            if ('r' == (currentChar = nextChar())) {
+            if ('r' == currentChar){
+                currentChar = nextChar();
                 string += currentChar;
-                if ('u' == (currentChar = nextChar())) {
+                if ('u' == currentChar) {
+                    currentChar = nextChar();
                     string += currentChar;
-                    if ('e' == (currentChar = nextChar())) {
-                        string += currentChar;
-                        return string;
-                    } else {
-                        string += currentChar;
+                    if ('e' == currentChar) {
+                        validLiteral = true;
                     }
                 }
             }
         } else if ('f' == currentChar) {
+            currentChar = nextChar();
             string += currentChar;
-            if ('a' == (currentChar = nextChar())) {
+            if ('a' == currentChar) {
+                currentChar = nextChar();
                 string += currentChar;
-                if ('l' == (currentChar = nextChar())) {
+                if ('l' == currentChar){
+                    currentChar = nextChar();
                     string += currentChar;
-                    if ('s' == (currentChar = nextChar())) {
+                    if ('s' == currentChar) {
+                        currentChar = nextChar();
                         string += currentChar;
-                        if ('e' == (currentChar = nextChar())) {
-                            string += currentChar;
-                            return string;
-                        } else {
-                            string += currentChar;
+                        if ('e' == currentChar){
+                            validLiteral = true;
                         }
                     }
                 }
             }
         } else if ('n' == currentChar) {
+            currentChar = nextChar();
             string += currentChar;
-            if ('u' == (currentChar = nextChar())) {
+            if ('u' == currentChar) {
+                currentChar = nextChar();
                 string += currentChar;
-                if ('l' == (currentChar = nextChar())) {
+                if ('l' == currentChar) {
+                    currentChar = nextChar();
                     string += currentChar;
-                    if ('l' == (currentChar = nextChar())) {
-                        string += currentChar;
-                        return string;
-                    } else {
-                        string += currentChar;
+                    if ('l' == currentChar) {
+                        validLiteral = true;
                     }
                 }
             }
         }
 
         currentChar = nextChar();
-        throw new InvalidTokenException(900, string, TokenType.LITERAL.toString());
+        if (validLiteral) {
+            return string;
+        } else {
+            throw new InvalidTokenException(900, string, TokenType.LITERAL.toString());
+        }
     }
 
 }

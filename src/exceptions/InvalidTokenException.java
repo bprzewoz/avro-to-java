@@ -6,13 +6,14 @@ package exceptions;
 
 public class InvalidTokenException extends Exception {
 
-    private String message = "(INVALID TOKEN EXCEPTION) ";
+    private String message = "(INVALID TOKEN EXCEPTION ";
 
     public InvalidTokenException(int errorCode, char tokenValue) {
         this(errorCode, String.valueOf(tokenValue), null);
     }
 
     public InvalidTokenException(int errorCode, String tokenValue, String tokenType) {
+        message += errorCode + ") ";
         switch (errorCode) {
             case 100:
                 message += "Illegal octal literal: ";

@@ -25,7 +25,76 @@ public class TestLexer {
     }
 
     public void test() {
+        testStringCases();
+        testNumberCases();
+        testLiteralCases();
         testIllegalCases();
+    }
+
+    private void testStringCases(){
+        System.out.println(YELLOW + "STRING TEST CASES:" + RESET);
+        for (int i = 1; i <= 5; i++) {
+            Token token = null;
+            boolean passed = true;
+            String fileName = "string" + i + ".txt";
+            FileHandler fileHandler = new FileHandler("tests/lexer/strings/" + fileName);
+            Lexer lexer = new Lexer(fileHandler);
+            while ((token = lexer.nextToken()).getTokenType() != TokenType.EOF) {
+                if(token.getTokenType() == TokenType.ERROR){
+                    passed = false;
+                    break;
+                }
+            }
+            String COLOR = passed?BLUE:RED;
+            String result = passed?"SUCCESS":"FAILURE";
+            System.out.println("Result of " + i +". string test case: " + COLOR + result + RESET);
+            fileHandler.closeFiles();
+        }
+        System.out.println();
+    }
+
+    private void testNumberCases(){
+        System.out.println(YELLOW + "NUMBER TEST CASES:" + RESET);
+        for (int i = 1; i <= 7; i++) {
+            Token token = null;
+            boolean passed = true;
+            String fileName = "number" + i + ".txt";
+            FileHandler fileHandler = new FileHandler("tests/lexer/numbers/" + fileName);
+            Lexer lexer = new Lexer(fileHandler);
+            while ((token = lexer.nextToken()).getTokenType() != TokenType.EOF) {
+                if(token.getTokenType() == TokenType.ERROR){
+                    passed = false;
+                    break;
+                }
+            }
+            String COLOR = passed?BLUE:RED;
+            String result = passed?"SUCCESS":"FAILURE";
+            System.out.println("Result of " + i +". number test case: " + COLOR + result + RESET);
+            fileHandler.closeFiles();
+        }
+        System.out.println();
+    }
+
+    private void testLiteralCases(){
+        System.out.println(YELLOW + "LITERAL TEST CASES:" + RESET);
+        for (int i = 1; i <= 3; i++) {
+            Token token = null;
+            boolean passed = true;
+            String fileName = "literal" + i + ".txt";
+            FileHandler fileHandler = new FileHandler("tests/lexer/literals/" + fileName);
+            Lexer lexer = new Lexer(fileHandler);
+            while ((token = lexer.nextToken()).getTokenType() != TokenType.EOF) {
+                if(token.getTokenType() == TokenType.ERROR){
+                    passed = false;
+                    break;
+                }
+            }
+            String COLOR = passed?BLUE:RED;
+            String result = passed?"SUCCESS":"FAILURE";
+            System.out.println("Result of " + i +". literal test case: " + COLOR + result + RESET);
+            fileHandler.closeFiles();
+        }
+        System.out.println();
     }
 
     private void testIllegalCases(){
@@ -47,5 +116,6 @@ public class TestLexer {
             System.out.println("Result of " + i +". illegal test case: " + COLOR + result + RESET);
             fileHandler.closeFiles();
         }
+        System.out.println();
     }
 }
