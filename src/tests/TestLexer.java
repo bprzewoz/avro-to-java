@@ -14,10 +14,11 @@ public class TestLexer {
         TestLexer testLexer = new TestLexer();
     }
 
+    private final String RESET = "\u001B[0m";
     private final String RED = "\u001B[31m";
     private final String GREEN = "\u001B[32m";
+    private final String YELLOW = "\u001B[33m";
     private final String BLUE = "\u001B[34m";
-    private final String RESET = "\u001B[0m";
 
     public TestLexer(){
         test();
@@ -28,7 +29,7 @@ public class TestLexer {
     }
 
     private void testIllegalCases(){
-        System.out.println("ILLEGAL TEST CASES:");
+        System.out.println(YELLOW + "ILLEGAL TEST CASES:" + RESET);
         for (int i = 1; i <= 9; i++) {
             Token token = null;
             boolean passed = false;
@@ -47,5 +48,4 @@ public class TestLexer {
             fileHandler.closeFiles();
         }
     }
-
 }
