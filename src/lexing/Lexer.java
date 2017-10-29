@@ -173,9 +173,7 @@ public class Lexer {
         string += currentChar;
         if (currentChar == '0') {
             currentChar = nextChar();
-            if (currentChar == ',') {
-                return string;
-            } else if (currentChar != '.' && currentChar != 'e' && currentChar != 'E') {
+            if (isDigit(currentChar)) {
                 string += currentChar;
                 throw new InvalidTokenException(100, string, TokenType.NUMBER.toString());
             }
