@@ -1,7 +1,11 @@
 {
-  "numberTest": 192,
-  "numberTest": 0.1876,
-  "numberTest": 182.10992,
-  "numberTest": 100,
-  "numberTest: 0
+    "test1" : -123,
+    "test2" : -0.780,
+    "test3" : -12.870,
+    "test4" : 0,
+    "test5A" : -A,
+    "test5B" : "str\uaaaaing",
+    "test5C" : "str\uAAAAing",
+    "test5D" : "str\u001ing",
+    "test6" : "str\ting"
 }

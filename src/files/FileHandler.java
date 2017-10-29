@@ -1,3 +1,9 @@
+package files;
+
+import lexing.Lexer;
+import lexing.Token;
+import lexing.TokenType;
+
 import java.io.*;
 
 /**
@@ -12,6 +18,7 @@ public class FileHandler {
         while ((token = lexer.nextToken()).getTokenType() != TokenType.EOF) {
             System.out.println(token.getTokenValue());
         }
+        System.out.println(token.getTokenValue());
         fileHandler.closeFiles();
     }
 

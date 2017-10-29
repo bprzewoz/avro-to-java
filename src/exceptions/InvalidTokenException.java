@@ -6,18 +6,22 @@ package exceptions;
 
 public class InvalidTokenException extends Exception {
 
+    private String message = "InvalidTokenException: ";
+
     public InvalidTokenException() {
-        System.out.println("InvalidTokenException: missing closing \" of string type.");
-        System.exit(-1);
+        message += "missing closing \" of string type.";
     }
 
     public InvalidTokenException(char token) {
-        System.out.println("InvalidTokenException: get '" + token + "', but expected valid token.");
-        System.exit(-1);
+        message += "get '" + token + "', but expected valid token.";
     }
 
     public InvalidTokenException(String token, String expectedType) {
-        System.out.println("InvalidTokenException: get \"" + token + "\", but expected " + expectedType + ".");
-        System.exit(-1);
+        message += "get \"" + token + "\", but expected " + expectedType + " type.";
     }
+
+    public void printMessage() {
+        System.out.println(message);
+    }
+
 }
