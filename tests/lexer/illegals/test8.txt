@@ -1,0 +1,4 @@
+{
+    "description" : "Unescaped ASCII control characters are not permitted.",
+    "value" : "\0"
+}

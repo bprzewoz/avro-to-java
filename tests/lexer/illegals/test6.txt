@@ -1,0 +1,4 @@
+{
+    "description" : "Invalid escape sequence.",
+    "value" : "\\x"
+}

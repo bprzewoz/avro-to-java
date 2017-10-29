@@ -1,0 +1,4 @@
+{
+    "description" : "Illegal trailing decimal.",
+    "value" : 1.
+}
