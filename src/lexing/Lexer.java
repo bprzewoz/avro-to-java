@@ -118,33 +118,43 @@ public class Lexer {
                 throw new InvalidTokenException(800, string + currentChar, TokenType.STRING.toString());
             } else if (currentChar == '\\') { // ZNAKI SPECJALNE
                 currentChar = nextChar();
-                if (currentChar == '"') {
-                    string += '"';
-                } else if (currentChar == '\\') {
-                    string += '\\';
-                } else if (currentChar == '/') {
-                    string += '/';
-                } else if (currentChar == 'b') {
-                    string += '\b';
-                } else if (currentChar == 'f') {
-                    string += '\f';
-                } else if (currentChar == 'n') {
-                    string += '\n';
-                } else if (currentChar == 'r') {
-                    string += '\r';
-                } else if (currentChar == 'u') { // LICZBA SZESNASTKOWA
-                    string += "\\u";
-                    for (int i = 0; i < 4; i++) {
-                        currentChar = nextChar();
-                        string += currentChar;
-                        if (!isHexadecimalDigit(currentChar)) {
-                            throw new InvalidTokenException(700, string, TokenType.STRING.toString());
+                switch(currentChar){
+                    case '"':
+                        string += '"';
+                        break;
+                    case '\\':
+                        string += '\\';
+                        break;
+                    case '/':
+                        string += '/';
+                        break;
+                    case 'b':
+                        string += '\b';
+                        break;
+                    case 'f':
+                        string += '\f';
+                        break;
+                    case 'n':
+                        string += '\n';
+                        break;
+                    case 'r':
+                        string += '\r';
+                        break;
+                    case 'u':
+                        string += "\\u";
+                        for (int i = 0; i < 4; i++) {
+                            currentChar = nextChar();
+                            string += currentChar;
+                            if (!isHexadecimalDigit(currentChar)) {
+                                throw new InvalidTokenException(700, string, TokenType.STRING.toString());
+                            }
                         }
-                    }
-                } else if (currentChar == 't') {
-                    string += '\t';
-                } else {
-                    throw new InvalidTokenException(600, string, TokenType.STRING.toString());
+                        break;
+                    case 't':
+                        string += '\t';
+                        break;
+                    default:
+                        throw new InvalidTokenException(600, string, TokenType.STRING.toString());
                 }
             } else {
                 string += currentChar;

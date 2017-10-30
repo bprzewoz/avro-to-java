@@ -25,53 +25,31 @@ public class TestLexer {
     }
 
     public void test() {
-        testCases(5, "string");
-        testCases(7, "number");
-        testCases(3, "literal");
-        testCases(5, "object");
-        testCases(4, "array");
-        testIllegalCases();
+        testCases(5, "string", true);
+        testCases(7, "number", true);
+        testCases(3, "literal", true);
+        testCases(5, "object", true);
+        testCases(4, "array", true);
+        testCases(9, "illegal", false);
     }
 
-    private void testCases(int number, String type) {
-        System.out.println(YELLOW + type.toUpperCase() + " TEST CASES:" + RESET);
+    private void testCases(int number, String type, boolean expectation) {
+        System.out.println(String.format("%s%s TEST CASES: %s", YELLOW, type.toUpperCase(), RESET));
         for (int i = 1; i <= number; i++) {
             Token token = null;
-            boolean passed = true;
+            boolean passed = expectation;
             String fileName = type + i + ".txt";
             FileHandler fileHandler = new FileHandler(String.format("tests/lexer/%ss/%s", type, fileName));
             Lexer lexer = new Lexer(fileHandler);
             while ((token = lexer.nextToken()).getTokenType() != TokenType.EOF) {
                 if (token.getTokenType() == TokenType.ERROR) {
-                    passed = false;
+                    passed = !expectation;
                     break;
                 }
             }
             String COLOR = passed ? BLUE : RED;
             String result = passed ? "SUCCESS" : "FAILURE";
             System.out.println(String.format("Result of %d. %s test case: %s%s%s", i, type, COLOR, result, RESET));
-            fileHandler.closeFiles();
-        }
-        System.out.println();
-    }
-
-    private void testIllegalCases() {
-        System.out.println(YELLOW + "ILLEGAL TEST CASES:" + RESET);
-        for (int i = 1; i <= 9; i++) {
-            Token token = null;
-            boolean passed = false;
-            String fileName = "illegal" + i + ".txt";
-            FileHandler fileHandler = new FileHandler("tests/lexer/illegals/" + fileName);
-            Lexer lexer = new Lexer(fileHandler);
-            while ((token = lexer.nextToken()).getTokenType() != TokenType.EOF) {
-                if (token.getTokenType() == TokenType.ERROR) {
-                    passed = true;
-                    break;
-                }
-            }
-            String COLOR = passed ? BLUE : RED;
-            String result = passed ? "SUCCESS" : "FAILURE";
-            System.out.println("Result of " + i + ". illegal test case: " + COLOR + result + RESET);
             fileHandler.closeFiles();
         }
         System.out.println();
