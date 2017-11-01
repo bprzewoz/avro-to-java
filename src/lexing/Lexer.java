@@ -1,7 +1,7 @@
 package lexing;
 
-import exceptions.InvalidTokenException;
 import files.FileHandler;
+import exceptions.InvalidTokenException;
 
 /**
  * Created by splbap on 2017-10-11.
@@ -27,8 +27,8 @@ public class Lexer {
         char c = (i == 13) ? '\n' : (char) i;
         endOfFile = (i == -1);
         if (c == '\n') {
-            row++;
             column = 1;
+            row++;
         } else {
             column++;
         }

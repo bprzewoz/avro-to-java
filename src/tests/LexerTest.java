@@ -8,7 +8,12 @@ import lexing.TokenType;
 /**
  * Created by splbap on 2017-10-29.
  */
-public class TestLexer {
+public class LexerTest {
+
+    public static void main(String[] args) {
+        LexerTest lexerTest = new LexerTest();
+        lexerTest.test();
+    }
 
     private final String RESET = "\u001B[0m";
     private final String RED = "\u001B[31m";
@@ -16,29 +21,21 @@ public class TestLexer {
     private final String YELLOW = "\u001B[33m";
     private final String BLUE = "\u001B[34m";
 
-    public TestLexer() {
-        test();
-    }
-
-    public static void main(String[] args) {
-        TestLexer testLexer = new TestLexer();
-    }
-
     public void test() {
-        testCases(5, "string", true);
-        testCases(7, "number", true);
-        testCases(3, "literal", true);
-        testCases(5, "object", true);
-        testCases(4, "array", true);
-        testCases(9, "illegal", false);
+        testCase(5, "string", true);
+        testCase(7, "number", true);
+        testCase(3, "literal", true);
+        testCase(5, "object", true);
+        testCase(4, "array", true);
+        testCase(9, "illegal", false);
     }
 
-    private void testCases(int number, String type, boolean expectation) {
+    private void testCase(int number, String type, boolean expectation) {
         System.out.println(String.format("%s%s TEST CASES: %s", YELLOW, type.toUpperCase(), RESET));
         for (int i = 1; i <= number; i++) {
             Token token = null;
             boolean passed = expectation;
-            String fileName = type + i + ".txt";
+            String fileName = String.format("%s%d.txt", type, i);
             FileHandler fileHandler = new FileHandler(String.format("tests/lexer/%ss/%s", type, fileName));
             Lexer lexer = new Lexer(fileHandler);
             while ((token = lexer.nextToken()).getTokenType() != TokenType.EOF) {
