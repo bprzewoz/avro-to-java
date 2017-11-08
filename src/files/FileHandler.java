@@ -1,9 +1,6 @@
 package files;
 
 import exceptions.InvalidFileException;
-import lexing.Lexer;
-import lexing.Token;
-import lexing.TokenType;
 
 import java.io.*;
 

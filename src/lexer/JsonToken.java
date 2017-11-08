@@ -1,40 +1,40 @@
-package lexing;
+package lexer;
 
 /**
  * Created by splbap on 2017-10-11.
  */
-public class Token {
+public class JsonToken {
 
     private int row;
     private int column;
     private int hashValue;
     private String tokenValue;
-    private TokenType tokenType;
+    private JsonTokenType jsonTokenType;
 
-    public Token(int row, int column, char tokenValue, TokenType tokenType) {
-        this(row, column, String.valueOf(tokenValue), tokenType);
+    public JsonToken(int row, int column, char tokenValue, JsonTokenType jsonTokenType) {
+        this(row, column, String.valueOf(tokenValue), jsonTokenType);
     }
 
-    public Token(int row, int column, String tokenValue, TokenType tokenType) {
+    public JsonToken(int row, int column, String tokenValue, JsonTokenType jsonTokenType) {
         this.tokenValue = tokenValue;
-        this.tokenType = tokenType;
+        this.jsonTokenType = jsonTokenType;
         this.column = column;
         this.row = row;
 
-        if (tokenType == TokenType.STRING) {
+        if (jsonTokenType == JsonTokenType.STRING) {
             hashValue = calculateHash(tokenValue);
         }
     }
 
-    public int getRow(){
+    public int getRow() {
         return row;
     }
 
-    public int getColumn(){
+    public int getColumn() {
         return column;
     }
 
-    public int getHashValue(){
+    public int getHashValue() {
         return hashValue;
     }
 
@@ -42,8 +42,8 @@ public class Token {
         return tokenValue;
     }
 
-    public TokenType getTokenType() {
-        return tokenType;
+    public JsonTokenType getJsonTokenType() {
+        return jsonTokenType;
     }
 
     private int calculateHash(String string) {

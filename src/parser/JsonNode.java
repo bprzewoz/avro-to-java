@@ -1,4 +1,4 @@
-package parsing;
+package parser;
 
 import java.util.LinkedList;
 
@@ -8,42 +8,40 @@ import java.util.LinkedList;
 public class JsonNode {
 
     private String name;
-    private NodeType nodeType;
+    private JsonNodeType jsonNodeType;
     private LinkedList<JsonNode> members = new LinkedList<>();
 
-    public JsonNode(NodeType nodeType) {
-        this.nodeType = nodeType;
+    public JsonNode(JsonNodeType jsonNodeType) {
+        this.jsonNodeType = jsonNodeType;
     }
 
-    public JsonNode(String name, NodeType nodeType) {
+    public JsonNode(String name, JsonNodeType jsonNodeType) {
         this.name = name;
-        this.nodeType = nodeType;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        this.jsonNodeType = jsonNodeType;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setNodeType(NodeType nodeType) {
-        this.nodeType = nodeType;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public NodeType getNodeType() {
-        return nodeType;
+    public JsonNodeType getJsonNodeType() {
+        return jsonNodeType;
+    }
+
+    public void setJsonNodeType(JsonNodeType jsonNodeType) {
+        this.jsonNodeType = jsonNodeType;
     }
 
     public void addMember(JsonNode jsonNode) {
-        if (jsonNode != null) {
-            members.add(jsonNode);
-        }
+        members.add(jsonNode);
     }
 
     public void printTree(int depth) {
-        System.out.println(String.format("%s%s, %s", getTab(depth), name, nodeType.toString()));
+        System.out.println(String.format("%s%s, %s", getTab(depth), name, jsonNodeType.toString()));
         if (!members.isEmpty()) {
             for (int i = 0; i < members.size(); i++) {
                 members.get(i).printTree(depth + 1);

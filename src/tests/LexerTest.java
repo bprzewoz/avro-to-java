@@ -1,25 +1,25 @@
 package tests;
 
 import files.FileHandler;
-import lexing.Lexer;
-import lexing.Token;
-import lexing.TokenType;
+import lexer.JsonLexer;
+import lexer.JsonToken;
+import lexer.JsonTokenType;
 
 /**
  * Created by splbap on 2017-10-29.
  */
 public class LexerTest {
 
-    public static void main(String[] args) {
-        LexerTest lexerTest = new LexerTest();
-        lexerTest.test();
-    }
-
     private final String RESET = "\u001B[0m";
     private final String RED = "\u001B[31m";
     private final String GREEN = "\u001B[32m";
     private final String YELLOW = "\u001B[33m";
     private final String BLUE = "\u001B[34m";
+
+    public static void main(String[] args) {
+        LexerTest lexerTest = new LexerTest();
+        lexerTest.test();
+    }
 
     public void test() {
         testCase(5, "string", true);
@@ -33,13 +33,13 @@ public class LexerTest {
     private void testCase(int number, String type, boolean expectation) {
         System.out.println(String.format("%s%s TEST CASES: %s", YELLOW, type.toUpperCase(), RESET));
         for (int i = 1; i <= number; i++) {
-            Token token = null;
+            JsonToken jsonToken = null;
             boolean passed = expectation;
             String fileName = String.format("%s%d.txt", type, i);
-            FileHandler fileHandler = new FileHandler(String.format("tests/lexer/%ss/%s", type, fileName));
-            Lexer lexer = new Lexer(fileHandler);
-            while ((token = lexer.nextToken()).getTokenType() != TokenType.EOF) {
-                if (token.getTokenType() == TokenType.ERROR) {
+            FileHandler fileHandler = new FileHandler(String.format("tests/jsonLexer/%ss/%s", type, fileName));
+            JsonLexer jsonLexer = new JsonLexer(fileHandler);
+            while ((jsonToken = jsonLexer.nextToken()).getJsonTokenType() != JsonTokenType.EOF) {
+                if (jsonToken.getJsonTokenType() == JsonTokenType.ERROR) {
                     passed = !expectation;
                     break;
                 }

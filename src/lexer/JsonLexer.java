@@ -1,25 +1,12 @@
-package lexing;
+package lexer;
 
-import files.FileHandler;
 import exceptions.InvalidTokenException;
+import files.FileHandler;
 
 /**
  * Created by splbap on 2017-10-11.
  */
-public class Lexer {
-
-    public static void main(String[] args) {
-        FileHandler fileHandler = new FileHandler("inputFile.txt", "outputFile.txt");
-        Lexer lexer = new Lexer(fileHandler);
-        Token token;
-        while ((token = lexer.nextToken()).getTokenType() != TokenType.EOF) {
-            if (token.getTokenType() == TokenType.ERROR) {
-                break;
-            }
-            System.out.println(token.getTokenValue());
-        }
-        fileHandler.closeFiles();
-    }
+public class JsonLexer {
 
     private int row;
     private int column;
@@ -27,12 +14,25 @@ public class Lexer {
     private boolean endOfFile;
     private FileHandler fileHandler;
 
-    public Lexer(FileHandler fileHandler) {
+    public JsonLexer(FileHandler fileHandler) {
         this.row = 1;
         this.column = 1;
         this.endOfFile = false;
         this.fileHandler = fileHandler;
         this.currentChar = nextChar();
+    }
+
+    public static void main(String[] args) {
+        FileHandler fileHandler = new FileHandler("inputFile.txt", "outputFile.txt");
+        JsonLexer jsonLexer = new JsonLexer(fileHandler);
+        JsonToken jsonToken;
+        while ((jsonToken = jsonLexer.nextToken()).getJsonTokenType() != JsonTokenType.EOF) {
+            if (jsonToken.getJsonTokenType() == JsonTokenType.ERROR) {
+                break;
+            }
+            System.out.println(jsonToken.getTokenValue());
+        }
+        fileHandler.closeFiles();
     }
 
     private char nextChar() {
@@ -48,56 +48,56 @@ public class Lexer {
         return c;
     }
 
-    public Token nextToken() {
-        Token token = null;
+    public JsonToken nextToken() {
+        JsonToken jsonToken = null;
         while (isSpace(currentChar)) { // BIALE ZNAKI
             currentChar = nextChar();
         }
 
         if (endOfFile) { // KONIEC PLIKU
-            return new Token(row, column, currentChar, TokenType.EOF);
+            return new JsonToken(row, column, currentChar, JsonTokenType.EOF);
         }
 
         try {
             switch (currentChar) { // POJEDYCZNE ZNAKI
                 case '{':
-                    token = new Token(row, column, currentChar, TokenType.LEFT_BRACE);
+                    jsonToken = new JsonToken(row, column, currentChar, JsonTokenType.LEFT_BRACE);
                     break;
                 case '}':
-                    token = new Token(row, column, currentChar, TokenType.RIGHT_BRACE);
+                    jsonToken = new JsonToken(row, column, currentChar, JsonTokenType.RIGHT_BRACE);
                     break;
                 case '[':
-                    token = new Token(row, column, currentChar, TokenType.LEFT_BRACKET);
+                    jsonToken = new JsonToken(row, column, currentChar, JsonTokenType.LEFT_BRACKET);
                     break;
                 case ']':
-                    token = new Token(row, column, currentChar, TokenType.RIGHT_BRACKET);
+                    jsonToken = new JsonToken(row, column, currentChar, JsonTokenType.RIGHT_BRACKET);
                     break;
                 case ',':
-                    token = new Token(row, column, currentChar, TokenType.COMMA);
+                    jsonToken = new JsonToken(row, column, currentChar, JsonTokenType.COMMA);
                     break;
                 case ':':
-                    token = new Token(row, column, currentChar, TokenType.COLON);
+                    jsonToken = new JsonToken(row, column, currentChar, JsonTokenType.COLON);
                     break;
             }
 
-            if (token != null) { // STRUKTURY ZLOZONE
+            if (jsonToken != null) { // STRUKTURY ZLOZONE
                 currentChar = nextChar();
-                return token;
+                return jsonToken;
             }
 
             if ('"' == currentChar) {
-                return new Token(row, column, readString(), TokenType.STRING);
+                return new JsonToken(row, column, readString(), JsonTokenType.STRING);
             } else if ('-' == currentChar || isDigit(currentChar)) {
-                return new Token(row, column, readNumber(), TokenType.NUMBER);
+                return new JsonToken(row, column, readNumber(), JsonTokenType.NUMBER);
             } else if (isLetter(currentChar)) {
-                return new Token(row, column, readLiteral(), TokenType.LITERAL);
+                return new JsonToken(row, column, readLiteral(), JsonTokenType.LITERAL);
             } else {
                 System.out.println((int) currentChar + "," + currentChar);
                 throw new InvalidTokenException(900, currentChar);
             }
         } catch (InvalidTokenException invalidTokenException) {
             System.out.println("[ROW " + row + ", COL " + column + "] " + invalidTokenException.getMessage());
-            return new Token(row, column, "ERROR", TokenType.ERROR);
+            return new JsonToken(row, column, "ERROR", JsonTokenType.ERROR);
         }
     }
 
@@ -125,12 +125,12 @@ public class Lexer {
         String string = "";
         while ((currentChar = nextChar()) != '"') {
             if (endOfFile) { // BRAK DOMKNIECIA
-                throw new InvalidTokenException(500, string, TokenType.STRING.toString());
+                throw new InvalidTokenException(500, string, JsonTokenType.STRING.toString());
             } else if (isSpecialCharacter(currentChar)) {
-                throw new InvalidTokenException(800, string + currentChar, TokenType.STRING.toString());
+                throw new InvalidTokenException(800, string + currentChar, JsonTokenType.STRING.toString());
             } else if (currentChar == '\\') { // ZNAKI SPECJALNE
                 currentChar = nextChar();
-                switch(currentChar){
+                switch (currentChar) {
                     case '"':
                         string += '"';
                         break;
@@ -158,7 +158,7 @@ public class Lexer {
                             currentChar = nextChar();
                             string += currentChar;
                             if (!isHexadecimalDigit(currentChar)) {
-                                throw new InvalidTokenException(700, string, TokenType.STRING.toString());
+                                throw new InvalidTokenException(700, string, JsonTokenType.STRING.toString());
                             }
                         }
                         break;
@@ -166,7 +166,7 @@ public class Lexer {
                         string += '\t';
                         break;
                     default:
-                        throw new InvalidTokenException(600, string, TokenType.STRING.toString());
+                        throw new InvalidTokenException(600, string, JsonTokenType.STRING.toString());
                 }
             } else {
                 string += currentChar;
@@ -185,7 +185,7 @@ public class Lexer {
             currentChar = nextChar();
             if (!isDigit(currentChar)) {
                 string += currentChar;
-                throw new InvalidTokenException(400, string, TokenType.NUMBER.toString());
+                throw new InvalidTokenException(400, string, JsonTokenType.NUMBER.toString());
             }
         }
 
@@ -194,7 +194,7 @@ public class Lexer {
             currentChar = nextChar();
             if (isDigit(currentChar)) {
                 string += currentChar;
-                throw new InvalidTokenException(100, string, TokenType.NUMBER.toString());
+                throw new InvalidTokenException(100, string, JsonTokenType.NUMBER.toString());
             }
         } else {
             string += readDigit();
@@ -208,7 +208,7 @@ public class Lexer {
                 string += readDigit();
             } else {
                 string += currentChar;
-                throw new InvalidTokenException(300, string, TokenType.NUMBER.toString());
+                throw new InvalidTokenException(300, string, JsonTokenType.NUMBER.toString());
             }
         }
 
@@ -224,7 +224,7 @@ public class Lexer {
                 string += readDigit();
             } else {
                 string += currentChar;
-                throw new InvalidTokenException(200, string, TokenType.NUMBER.toString());
+                throw new InvalidTokenException(200, string, JsonTokenType.NUMBER.toString());
             }
         }
 
@@ -297,7 +297,7 @@ public class Lexer {
             currentChar = nextChar();
             return string;
         } else {
-            throw new InvalidTokenException(900, string, TokenType.LITERAL.toString());
+            throw new InvalidTokenException(900, string, JsonTokenType.LITERAL.toString());
         }
     }
 }
