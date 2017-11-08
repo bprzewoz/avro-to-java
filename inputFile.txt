@@ -1,11 +1,25 @@
-{
-    "test1" : -123,
-    "test2" : -0.780,
-    "test3" : -12.870,
-    "test4" : 2e,
-    "test5A" : -A,
-    "test5B" : "str\uaaaaing",
-    "test5C" : "str\uAAAAing",
-    "test5D" : "str\u001ing",
-    "test6" : "str\ting"
+{  
+   "glossary":{  
+      "title":"example glossary",
+      "GlossDiv":{  
+         "title":"S",
+         "GlossList":{  
+            "GlossEntry":{  
+               "ID":"SGML",
+               "SortAs":"SGML",
+               "GlossTerm":"Standard Generalized Markup Language",
+               "Acronym":"SGML",
+               "Abbrev":"ISO 8879:1986",
+               "GlossDef":{  
+                  "para":"A meta-markup language, used to create markup languages such as DocBook.",
+                  "GlossSeeAlso":[  
+                     "GML",
+                     "XML"
+                  ]
+               },
+               "GlossSee":"markup"
+            }
+         }
+      }
+   }
 }

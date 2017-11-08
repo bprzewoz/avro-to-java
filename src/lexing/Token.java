@@ -26,6 +26,18 @@ public class Token {
         }
     }
 
+    public int getRow(){
+        return row;
+    }
+
+    public int getColumn(){
+        return column;
+    }
+
+    public int getHashValue(){
+        return hashValue;
+    }
+
     public String getTokenValue() {
         return tokenValue;
     }

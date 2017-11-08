@@ -8,6 +8,19 @@ import exceptions.InvalidTokenException;
  */
 public class Lexer {
 
+    public static void main(String[] args) {
+        FileHandler fileHandler = new FileHandler("inputFile.txt", "outputFile.txt");
+        Lexer lexer = new Lexer(fileHandler);
+        Token token;
+        while ((token = lexer.nextToken()).getTokenType() != TokenType.EOF) {
+            if (token.getTokenType() == TokenType.ERROR) {
+                break;
+            }
+            System.out.println(token.getTokenValue());
+        }
+        fileHandler.closeFiles();
+    }
+
     private int row;
     private int column;
     private char currentChar;
@@ -65,15 +78,14 @@ public class Lexer {
                 case ':':
                     token = new Token(row, column, currentChar, TokenType.COLON);
                     break;
-                case ';':
-                    token = new Token(row, column, currentChar, TokenType.SEMICOLON);
-                    break;
             }
 
             if (token != null) { // STRUKTURY ZLOZONE
                 currentChar = nextChar();
                 return token;
-            } else if ('"' == currentChar) {
+            }
+
+            if ('"' == currentChar) {
                 return new Token(row, column, readString(), TokenType.STRING);
             } else if ('-' == currentChar || isDigit(currentChar)) {
                 return new Token(row, column, readNumber(), TokenType.NUMBER);
@@ -281,8 +293,8 @@ public class Lexer {
             }
         }
 
-        currentChar = nextChar();
         if (validLiteral) {
+            currentChar = nextChar();
             return string;
         } else {
             throw new InvalidTokenException(900, string, TokenType.LITERAL.toString());

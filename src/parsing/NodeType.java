@@ -8,6 +8,9 @@ public enum NodeType {
     OBJECT,
     ARRAY,
     PAIR,
-    NAME,
-    VALUE
+    STRING,
+    NUMBER,
+    LITERAL,
+    ERROR,
+    EOF
 }

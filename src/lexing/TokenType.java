@@ -10,7 +10,6 @@ public enum TokenType {
     RIGHT_BRACKET,
     COMMA,
     COLON,
-    SEMICOLON,
     STRING,
     NUMBER,
     LITERAL,

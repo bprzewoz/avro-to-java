@@ -1,5 +1,6 @@
 package files;
 
+import exceptions.InvalidFileException;
 import lexing.Lexer;
 import lexing.Token;
 import lexing.TokenType;
@@ -11,50 +12,45 @@ import java.io.*;
  */
 public class FileHandler {
 
+    private String inputFile = null;
+    private String outputFile = null;
     private InputStream inputStream = null;
     private OutputStream outputStream = null;
     private BufferedInputStream bufferedInputStream = null;
 
     public FileHandler(String inputFile) {
-        openInputFile(inputFile);
+        try {
+            openInputFile(inputFile);
+        } catch (InvalidFileException invalidFileException) {
+            System.out.println(invalidFileException.getMessage());
+        }
     }
 
     public FileHandler(String inputFile, String outputFile) {
-        openFiles(inputFile, outputFile);
-    }
-
-    public static void main(String[] args) {
-        FileHandler fileHandler = new FileHandler("inputFile.txt", "outputFile.txt");
-        Lexer lexer = new Lexer(fileHandler);
-        Token token;
-        while ((token = lexer.nextToken()).getTokenType() != TokenType.EOF) {
-            if (token.getTokenType() == TokenType.ERROR) {
-                break;
-            }
-            System.out.println(token.getTokenValue());
-        }
-        fileHandler.closeFiles();
-    }
-
-    private void openFiles(String inputFile, String outputFile) {
-        openInputFile(inputFile);
-        openOutputFile(outputFile);
-    }
-
-    private void openInputFile(String inputFile) {
         try {
+            openInputFile(inputFile);
+            openOutputFile(outputFile);
+        } catch (InvalidFileException invalidFileException) {
+            System.out.println(invalidFileException.getMessage());
+        }
+    }
+
+    private void openInputFile(String inputFile) throws InvalidFileException {
+        try {
+            this.inputFile = inputFile;
             inputStream = new FileInputStream(inputFile);
             bufferedInputStream = new BufferedInputStream(inputStream);
-        } catch (IOException ioe) {
-            System.out.println("Blad otwarcia pliku wejsciowego.");
+        } catch (IOException ioexception) {
+            throw new InvalidFileException(100, inputFile);
         }
     }
 
-    private void openOutputFile(String outputFile) {
+    private void openOutputFile(String outputFile) throws InvalidFileException {
         try {
+            this.outputFile = outputFile;
             outputStream = new FileOutputStream(outputFile);
-        } catch (IOException ioe) {
-            System.out.println("Blad otwarcia pliku wyjsciowego.");
+        } catch (IOException ioexception) {
+            throw new InvalidFileException(200, outputFile);
         }
     }
 
@@ -62,46 +58,54 @@ public class FileHandler {
         int ascii = -1;
         try {
             ascii = bufferedInputStream.read();
-        } catch (IOException ioe) {
-            System.out.println("Blad odczytu pliku wejsciowego.");
+        } catch (IOException ioexception) {
+            try {
+                throw new InvalidFileException(200, inputFile);
+            } catch (InvalidFileException invalidFileException) {
+                System.out.println(invalidFileException.getMessage());
+            }
         }
         return ascii;
     }
 
-    public void mark() {
-        bufferedInputStream.mark(10);
-    }
+//    public void mark() {
+//        bufferedInputStream.mark(10);
+//    }
+//
+//    public void reset() {
+//        try {
+//            bufferedInputStream.reset();
+//        } catch (IOException ioe) {
+//            System.out.println("Blad resetowania znacznika pliku wejsciowego.");
+//        }
+//    }
 
-    public void reset() {
+    public void closeFiles() {
         try {
-            bufferedInputStream.reset();
-        } catch (IOException ioe) {
-            System.out.println("Blad resetowania znacznika pliku wejsciowego.");
+            closeInputFile();
+            closeOutputFile();
+        } catch (InvalidFileException invalidFileException) {
+            System.out.println(invalidFileException.getMessage());
         }
     }
 
-    public void closeFiles() {
-        closeInputFile();
-        closeOutputFile();
-    }
-
-    private void closeInputFile() {
+    private void closeInputFile() throws InvalidFileException {
         try {
             if (bufferedInputStream != null) {
                 bufferedInputStream.close();
             }
-        } catch (IOException ioe) {
-            System.out.println("Blad zamkniecia pliku wejsciowego.");
+        } catch (IOException ioexception) {
+            throw new InvalidFileException(300, inputFile);
         }
     }
 
-    private void closeOutputFile() {
+    private void closeOutputFile() throws InvalidFileException {
         try {
             if (outputStream != null) {
                 outputStream.close();
             }
-        } catch (IOException ioe) {
-            System.out.println("Blad zamkniecia pliku wyjsciowego.");
+        } catch (IOException ioexception) {
+            throw new InvalidFileException(300, outputFile);
         }
     }
 }
