@@ -11,8 +11,6 @@ public abstract class JsonValue extends JsonNode {
         super(row, column);
     }
 
-    public void printTree(int depth){
-
-    }
+    public abstract void printTree(int depth);
 
 }

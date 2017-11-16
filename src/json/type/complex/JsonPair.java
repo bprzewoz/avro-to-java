@@ -1,14 +1,17 @@
 package json.type.complex;
 
+import json.type.JsonNode;
+
 /**
  * Created by splbap on 2017-11-15.
  */
-public class JsonPair {
+public class JsonPair extends JsonNode {
 
     private String key;
     private JsonValue value;
 
-    public JsonPair(String key, JsonValue value) {
+    public JsonPair(int row, int column, String key, JsonValue value) {
+        super(row, column);
         this.key = key;
         this.value = value;
     }
@@ -30,8 +33,7 @@ public class JsonPair {
     }
 
     public void printTree(int depth) {
-        String tab = new String(new char[depth]).replace("\0", "\t");
-        System.out.println(String.format("%s%s - %s", tab, key, this.getClass().getSimpleName()));
+        super.printTree(depth, key);
         value.printTree(depth + 1);
     }
 

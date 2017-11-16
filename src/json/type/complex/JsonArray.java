@@ -28,8 +28,7 @@ public class JsonArray extends JsonValue {
     }
 
     public void printTree(int depth) {
-        String tab = new String(new char[depth]).replace("\0", "\t");
-        System.out.println(String.format("%s%s - %s", tab, null, this.getClass().getSimpleName()));
+        super.printTree(depth, null);
         if (!elements.isEmpty()) {
             for (int i = 0; i < elements.size(); i++) {
                 elements.get(i).printTree(depth + 1);

@@ -29,4 +29,9 @@ public class JsonNode {
         this.column = column;
     }
 
+    public void printTree(int depth, String string) {
+        String tab = new String(new char[depth]).replace("\0", "\t");
+        System.out.println(String.format("%s%s - %s", tab, string, this.getClass().getSimpleName()));
+    }
+
 }

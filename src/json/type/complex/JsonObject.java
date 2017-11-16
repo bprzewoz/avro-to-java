@@ -28,8 +28,7 @@ public class JsonObject extends JsonValue {
     }
 
     public void printTree(int depth) {
-        String tab = new String(new char[depth]).replace("\0", "\t");
-        System.out.println(String.format("%s%s - %s", tab, null, this.getClass().getSimpleName()));
+        super.printTree(depth, null);
         if (!members.isEmpty()) {
             for (int i = 0; i < members.size(); i++) {
                 members.get(i).printTree(depth + 1);
