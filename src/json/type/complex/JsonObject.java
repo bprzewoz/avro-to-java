@@ -27,11 +27,11 @@ public class JsonObject extends JsonValue {
         this.members = members;
     }
 
-    public void printTree(int depth) {
-        super.printTree(depth, null);
+    public void printNode(int depth) {
+        super.printNode(depth, null);
         if (!members.isEmpty()) {
             for (int i = 0; i < members.size(); i++) {
-                members.get(i).printTree(depth + 1);
+                members.get(i).printNode(depth + 1);
             }
         }
     }

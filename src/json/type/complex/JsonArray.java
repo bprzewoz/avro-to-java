@@ -27,11 +27,11 @@ public class JsonArray extends JsonValue {
         this.elements = elements;
     }
 
-    public void printTree(int depth) {
-        super.printTree(depth, null);
+    public void printNode(int depth) {
+        super.printNode(depth, null);
         if (!elements.isEmpty()) {
             for (int i = 0; i < elements.size(); i++) {
-                elements.get(i).printTree(depth + 1);
+                elements.get(i).printNode(depth + 1);
             }
         }
     }

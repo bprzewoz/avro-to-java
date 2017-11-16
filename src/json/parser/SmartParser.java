@@ -33,7 +33,7 @@ public class SmartParser {
         JsonLexer jsonLexer = new JsonLexer(fileHandler);
         SmartParser smartParser = new SmartParser(jsonLexer);
         JsonObject jsonObject = smartParser.parseFile();
-        jsonObject.printTree(0);
+        jsonObject.printNode(0);
         fileHandler.closeFiles();
     }
 

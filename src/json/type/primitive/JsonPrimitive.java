@@ -22,8 +22,8 @@ public class JsonPrimitive extends JsonValue {
         this.value = value;
     }
 
-    public void printTree(int depth) {
-        super.printTree(depth, value);
+    public void printNode(int depth) {
+        super.printNode(depth, value);
     }
 
 }

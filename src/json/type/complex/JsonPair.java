@@ -32,9 +32,9 @@ public class JsonPair extends JsonNode {
         this.value = value;
     }
 
-    public void printTree(int depth) {
-        super.printTree(depth, key);
-        value.printTree(depth + 1);
+    public void printNode(int depth) {
+        super.printNode(depth, key);
+        value.printNode(depth + 1);
     }
 
 }
