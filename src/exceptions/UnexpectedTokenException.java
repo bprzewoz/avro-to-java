@@ -28,7 +28,7 @@ public class UnexpectedTokenException extends Exception {
                 message += "Elements parsing error: expected COMMA ',' or RIGHT_BRACKET ']' after array element, ";
                 break;
             case 600:
-                message += "Value parsing error: expected LEFT_BRACE '{', LEFT_BRACKET '', STRING, NUMBER or LITERAL after COLON ':' in object, ";
+                message += "Value parsing error: expected LEFT_BRACE '{', LEFT_BRACKET '[', STRING, NUMBER or LITERAL after COLON ':' in object, ";
                 break;
         }
 

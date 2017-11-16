@@ -5,6 +5,15 @@ import files.FileHandler;
 import json.lexer.JsonLexer;
 import json.token.JsonToken;
 import json.token.JsonTokenType;
+import json.type.complex.JsonArray;
+import json.type.complex.JsonObject;
+import json.type.complex.JsonPair;
+import json.type.complex.JsonValue;
+import json.type.primitive.JsonLiteral;
+import json.type.primitive.JsonNumber;
+import json.type.primitive.JsonString;
+
+import java.util.LinkedList;
 
 /**
  * Created by splbap on 2017-10-30.
@@ -12,144 +21,166 @@ import json.token.JsonTokenType;
 public class JsonParser {
 
     private JsonLexer jsonLexer;
-    private JsonToken currentJsonToken;
+    private JsonToken currentToken;
 
     public JsonParser(JsonLexer jsonLexer) {
         this.jsonLexer = jsonLexer;
-        this.currentJsonToken = jsonLexer.nextToken();
+        this.currentToken = jsonLexer.nextToken();
     }
 
     public static void main(String[] args) {
-        FileHandler fileHandler = new FileHandler("inputFile.txt", "outputFile.txt");
+        FileHandler fileHandler = new FileHandler("tests/json/parser/values/value1.txt", "outputFile.txt");
         JsonLexer jsonLexer = new JsonLexer(fileHandler);
         JsonParser jsonParser = new JsonParser(jsonLexer);
-        JsonNode jsonNode = jsonParser.parseFile();
-        jsonNode.printTree(0);
+        JsonObject jsonObject = jsonParser.parseFile();
+        if (jsonObject != null) {
+            jsonObject.printNode(0);
+        }
         fileHandler.closeFiles();
     }
 
-    public JsonNode parseFile() {
+    public JsonObject parseFile() {
         try {
-            return parseObject();
-        } catch (UnexpectedTokenException unexpectedTokenException) {
-            System.out.println("[ROW " + currentJsonToken.getRow() + ", COL " + currentJsonToken.getColumn() + "] " + unexpectedTokenException.getMessage());
-            return new JsonNode("ERROR", JsonNodeType.ERROR);
-        }
-    }
-
-    private JsonNode parseObject() throws UnexpectedTokenException {
-        JsonNode jsonObject = new JsonNode(JsonNodeType.OBJECT);
-        if (currentJsonToken.getType() != JsonTokenType.LEFT_BRACE) {
-            throw new UnexpectedTokenException(100, currentJsonToken.getType());
-        }
-
-        if ((currentJsonToken = jsonLexer.nextToken()).getType() == JsonTokenType.RIGHT_BRACE) { // EMPTY OBJECT
-            currentJsonToken = jsonLexer.nextToken();
-            return jsonObject;
-        }
-
-        return parseMembers(jsonObject);
-    }
-
-    private JsonNode parseMembers(JsonNode jsonObject) throws UnexpectedTokenException {
-        do {
-            parsePair(jsonObject);
-
-            if (currentJsonToken.getType() == JsonTokenType.RIGHT_BRACE) {
-                currentJsonToken = jsonLexer.nextToken();
+            JsonObject jsonObject = parseObject();
+            if (jsonObject != null) {
                 return jsonObject;
+            } else {
+                throw new UnexpectedTokenException(100, currentToken.getType());
             }
+        } catch (UnexpectedTokenException unexpectedTokenException) {
+            System.out.println("[ROW " + currentToken.getRow() + ", COL " + currentToken.getColumn() + "] " + unexpectedTokenException.getMessage());
+            return null;
         }
-        while (currentJsonToken.getType() == JsonTokenType.COMMA && (currentJsonToken = jsonLexer.nextToken()).getType() != null);
-
-        throw new UnexpectedTokenException(200, currentJsonToken.getType());
     }
 
-    private void parsePair(JsonNode jsonObject) throws UnexpectedTokenException {
-        JsonNode jsonMember = null;
-        if (currentJsonToken.getType() == JsonTokenType.STRING) {
-            jsonMember = new JsonNode(currentJsonToken.getValue(), JsonNodeType.PAIR);
-        } else {
-            throw new UnexpectedTokenException(300, currentJsonToken.getType());
+    private JsonObject parseObject() throws UnexpectedTokenException {
+        if (currentToken.getType() != JsonTokenType.LEFT_BRACE) {
+            return null;
         }
 
-        if ((currentJsonToken = jsonLexer.nextToken()).getType() != JsonTokenType.COLON) {
-            throw new UnexpectedTokenException(400, currentJsonToken.getType());
+        int row = currentToken.getRow();
+        int column = currentToken.getColumn();
+
+        if ((currentToken = jsonLexer.nextToken()).getType() == JsonTokenType.RIGHT_BRACE) { // EMPTY OBJECT
+            currentToken = jsonLexer.nextToken();
+            return new JsonObject(row, column);
         }
 
-        currentJsonToken = jsonLexer.nextToken();
-        JsonNode jsonValue = parseValue();
-
-        if (jsonValue.getJsonNodeType() == JsonNodeType.OBJECT || jsonValue.getJsonNodeType() == JsonNodeType.ARRAY) {
-            jsonValue.setString(jsonMember.getString());
-            jsonObject.addMember(jsonValue);
-        } else {
-            jsonMember.addMember(jsonValue);
-            jsonObject.addMember(jsonMember);
-        }
-
+        LinkedList<JsonPair> members = parseMembers();
+        return new JsonObject(row, column, members);
     }
 
-    private JsonNode parseArray() throws UnexpectedTokenException {
-        JsonNode jsonArray = new JsonNode(JsonNodeType.ARRAY);
-        if (currentJsonToken.getType() != JsonTokenType.LEFT_BRACKET) {
-            throw new UnexpectedTokenException(100, currentJsonToken.getType());
-        }
-
-        if ((currentJsonToken = jsonLexer.nextToken()).getType() == JsonTokenType.RIGHT_BRACKET) { // EMPTY ARRAY
-            currentJsonToken = jsonLexer.nextToken();
-            return jsonArray;
-        }
-
-        return parseElements(jsonArray);
-    }
-
-    private JsonNode parseElements(JsonNode jsonArray) throws UnexpectedTokenException {
+    private LinkedList<JsonPair> parseMembers() throws UnexpectedTokenException {
+        LinkedList<JsonPair> members = new LinkedList<>();
         do {
-            jsonArray.addMember(parseValue());
-            if (currentJsonToken.getType() == JsonTokenType.RIGHT_BRACKET) {
-                currentJsonToken = jsonLexer.nextToken();
-                return jsonArray;
+            members.add(parsePair());
+
+            if (currentToken.getType() == JsonTokenType.RIGHT_BRACE) {
+                currentToken = jsonLexer.nextToken();
+                return members;
             }
         }
-        while (currentJsonToken.getType() == JsonTokenType.COMMA && (currentJsonToken = jsonLexer.nextToken()).getType() != null);
+        while (currentToken.getType() == JsonTokenType.COMMA && (currentToken = jsonLexer.nextToken()).getType() != null);
 
-        throw new UnexpectedTokenException(500, currentJsonToken.getType());
+        throw new UnexpectedTokenException(200, currentToken.getType());
     }
 
-    private JsonNode parseValue() throws UnexpectedTokenException {
-        switch (currentJsonToken.getType()) {
-            case LEFT_BRACE:
-                return parseObject();
-            case LEFT_BRACKET:
-                return parseArray();
-            case STRING:
-                return parseString();
-            case NUMBER:
-                return parseNumber();
-            case LITERAL:
-                return parseLiteral();
-            default:
-                throw new UnexpectedTokenException(600, currentJsonToken.getType());
+    private JsonPair parsePair() throws UnexpectedTokenException {
+        String key;
+        if (currentToken.getType() == JsonTokenType.STRING) {
+            key = currentToken.getValue();
+        } else {
+            throw new UnexpectedTokenException(300, currentToken.getType());
+        }
+
+        int row = currentToken.getRow();
+        int column = currentToken.getColumn();
+
+        if ((currentToken = jsonLexer.nextToken()).getType() != JsonTokenType.COLON) {
+            throw new UnexpectedTokenException(400, currentToken.getType());
+        }
+
+        currentToken = jsonLexer.nextToken();
+        JsonValue jsonValue = parseValue();
+        return new JsonPair(row, column, key, jsonValue);
+    }
+
+    private JsonArray parseArray() throws UnexpectedTokenException {
+        if (currentToken.getType() != JsonTokenType.LEFT_BRACKET) {
+            return null;
+        }
+
+        int row = currentToken.getRow();
+        int column = currentToken.getColumn();
+
+        if ((currentToken = jsonLexer.nextToken()).getType() == JsonTokenType.RIGHT_BRACKET) { // EMPTY ARRAY
+            currentToken = jsonLexer.nextToken();
+            return new JsonArray(row, column);
+        }
+
+        LinkedList<JsonValue> elements = parseElements();
+        return new JsonArray(row, column, elements);
+    }
+
+    private LinkedList<JsonValue> parseElements() throws UnexpectedTokenException {
+        LinkedList<JsonValue> elements = new LinkedList<>();
+        do {
+            elements.add(parseValue());
+            if (currentToken.getType() == JsonTokenType.RIGHT_BRACKET) {
+                currentToken = jsonLexer.nextToken();
+                return elements;
+            }
+        }
+        while (currentToken.getType() == JsonTokenType.COMMA && (currentToken = jsonLexer.nextToken()).getType() != null);
+
+        throw new UnexpectedTokenException(500, currentToken.getType());
+    }
+
+    private JsonValue parseValue() throws UnexpectedTokenException {
+        JsonValue jsonValue;
+        if ((jsonValue = parseObject()) != null) {
+            return jsonValue;
+        } else if ((jsonValue = parseArray()) != null) {
+            return jsonValue;
+        } else if ((jsonValue = parseString()) != null) {
+            return jsonValue;
+        } else if ((jsonValue = parseNumber()) != null) {
+            return jsonValue;
+        } else if ((jsonValue = parseLiteral()) != null) {
+            return jsonValue;
+        } else {
+            throw new UnexpectedTokenException(600, currentToken.getType());
         }
     }
 
-    private JsonNode parseString() {
-        JsonNode jsonString = new JsonNode(currentJsonToken.getValue(), JsonNodeType.STRING);
-        currentJsonToken = jsonLexer.nextToken();
-        return jsonString;
+    private JsonString parseString() {
+        if (currentToken.getType() == JsonTokenType.STRING) {
+            JsonString jsonString = new JsonString(currentToken.getRow(), currentToken.getColumn(), currentToken.getValue());
+            currentToken = jsonLexer.nextToken();
+            return jsonString;
+        } else {
+            return null;
+        }
     }
 
-    private JsonNode parseNumber() {
-        JsonNode jsonNumber = new JsonNode(currentJsonToken.getValue(), JsonNodeType.NUMBER);
-        currentJsonToken = jsonLexer.nextToken();
-        return jsonNumber;
+    private JsonNumber parseNumber() {
+        if (currentToken.getType() == JsonTokenType.NUMBER) {
+            JsonNumber jsonNumber = new JsonNumber(currentToken.getRow(), currentToken.getColumn(), currentToken.getValue());
+            currentToken = jsonLexer.nextToken();
+            return jsonNumber;
+        } else {
+            return null;
+        }
     }
 
-    private JsonNode parseLiteral() {
-        JsonNode jsonLiteral = new JsonNode(currentJsonToken.getValue(), JsonNodeType.LITERAL);
-        currentJsonToken = jsonLexer.nextToken();
-        return jsonLiteral;
+    private JsonLiteral parseLiteral() {
+        if (currentToken.getType() == JsonTokenType.LITERAL) {
+            JsonLiteral jsonLiteral = new JsonLiteral(currentToken.getRow(), currentToken.getColumn(), currentToken.getValue());
+            currentToken = jsonLexer.nextToken();
+            return jsonLiteral;
+        } else {
+            return null;
+        }
     }
 
 }

@@ -2,10 +2,9 @@ package tests;
 
 import files.FileHandler;
 import json.lexer.JsonLexer;
-import json.parser.JsonNode;
-import json.parser.JsonNodeType;
 import json.parser.JsonParser;
 import json.token.JsonToken;
+import json.type.JsonNode;
 
 /**
  * Created by splbap on 2017-10-29.
@@ -29,7 +28,7 @@ public class JsonParserTest {
         testCase(1, "pair", true);
         testCase(1, "array", true);
         testCase(1, "element", true);
-        testCase(1, "primitive", true);
+        testCase(1, "value", true);
 
         testCase(6, "illegal", false);
     }
@@ -44,7 +43,7 @@ public class JsonParserTest {
             JsonLexer jsonLexer = new JsonLexer(fileHandler);
             JsonParser jsonParser = new JsonParser(jsonLexer);
             JsonNode jsonNode = jsonParser.parseFile();
-            if (jsonNode == null || jsonNode.getJsonNodeType() == JsonNodeType.ERROR) {
+            if (jsonNode == null) {
                 passed = !expectation;
             }
             String COLOR = passed ? BLUE : RED;
