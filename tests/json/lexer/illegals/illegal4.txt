@@ -1,0 +1,5 @@
+{
+    "description":"A negative sign may only precede numbers.",
+    "literal":-,
+    "code":400
+}

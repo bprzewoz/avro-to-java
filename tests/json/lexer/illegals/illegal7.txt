@@ -1,0 +1,5 @@
+{
+    "description":"Invalid Unicode escape sequence.",
+    "literal":"\u00G0",
+    "code":700
+}

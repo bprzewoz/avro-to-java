@@ -1,7 +1,9 @@
 {  
    "glossary":{  
       "title":"example glossary",
-      "GlossDiv":{  
+      "GlossDiv":{
+         "number1":123.456,
+         "number2":0.123e-465,
          "title":"S",
          "GlossList":{  
             "GlossEntry":{  

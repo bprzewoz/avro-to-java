@@ -1,0 +1,11 @@
+{  
+   "key1":{  
+
+   },
+   "key2":[  
+
+   ],
+   "key3":"string",
+   "key4":1,
+   "key5":true
+}

@@ -1,5 +1,0 @@
-{
-    "description" : "Illegal trailing decimal.",
-    "value" : 1.,
-    "code" : 300
-}

@@ -1,0 +1,5 @@
+{
+    "description":"Invalid escape sequence.",
+    "literal":"\x",
+    "code":600
+}

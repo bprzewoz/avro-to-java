@@ -1,5 +1,0 @@
-{
-    "description" : "Unterminated string.",
-    "value" : "hi,
-    "code" : 500
-}

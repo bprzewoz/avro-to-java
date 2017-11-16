@@ -1,9 +1,6 @@
 package exceptions;
 
-import lexer.JsonTokenType;
-
-import java.util.Arrays;
-import java.util.List;
+import json.token.JsonTokenType;
 
 /**
  * Created by splbap on 2017-11-01.
@@ -16,45 +13,30 @@ public class UnexpectedTokenException extends Exception {
         message = String.format("(UNEXPECTED TOKEN EXCEPTION %d) ", errorCode);
         switch (errorCode) {
             case 100:
-                message += "Get wrong token: ";
+                message += "Object parsing error: expected LEFT_BRACE '{' at start of object, ";
                 break;
             case 200:
-                message += "";
+                message += "Members parsing error: expected COMMA ',' or RIGHT_BRACE '}' after property primitive in object, ";
                 break;
-            default:
-                message += "Get wrong token: ";
+            case 300:
+                message += "Pair parsing error: expected STRING name or RIGHT_BRACE ‘}’ in object, ";
+                break;
+            case 400:
+                message += "Pair parsing error: expected COLON ':' after STRING name in object, ";
+                break;
+            case 500:
+                message += "Elements parsing error: expected COMMA ',' or RIGHT_BRACKET ']' after array element, ";
+                break;
+            case 600:
+                message += "Value parsing error: expected LEFT_BRACE '{', LEFT_BRACKET '', STRING, NUMBER or LITERAL after COLON ':' in object, ";
                 break;
         }
 
-        message += String.format("read token %s type, but expected %s type.", jsonTokenType, expectedTokens(jsonTokenType).toString());
+        message += String.format("but read token %s type.", jsonTokenType);
     }
 
     public String getMessage() {
         return message;
-    }
-
-    private List<JsonTokenType> expectedTokens(JsonTokenType jsonTokenType) { // OCZEKIWANE TOKENY
-        if (jsonTokenType == JsonTokenType.LEFT_BRACE) { // {
-            return Arrays.asList(JsonTokenType.RIGHT_BRACE, JsonTokenType.STRING);
-        } else if (jsonTokenType == JsonTokenType.RIGHT_BRACE) { // }
-            return Arrays.asList(JsonTokenType.RIGHT_BRACE, JsonTokenType.RIGHT_BRACKET, JsonTokenType.COMMA);
-        } else if (jsonTokenType == JsonTokenType.LEFT_BRACKET) { // [
-            return Arrays.asList(JsonTokenType.LEFT_BRACE, JsonTokenType.LEFT_BRACKET, JsonTokenType.STRING, JsonTokenType.NUMBER, JsonTokenType.LITERAL);
-        } else if (jsonTokenType == JsonTokenType.RIGHT_BRACKET) { // ]
-            return Arrays.asList(JsonTokenType.RIGHT_BRACE, JsonTokenType.RIGHT_BRACKET, JsonTokenType.COMMA);
-        } else if (jsonTokenType == JsonTokenType.COMMA) { // ,
-            return Arrays.asList(JsonTokenType.LEFT_BRACE, JsonTokenType.LEFT_BRACKET, JsonTokenType.STRING, JsonTokenType.NUMBER, JsonTokenType.LITERAL);
-        } else if (jsonTokenType == JsonTokenType.COLON) { // :
-            return Arrays.asList(JsonTokenType.LEFT_BRACE, JsonTokenType.LEFT_BRACKET, JsonTokenType.STRING, JsonTokenType.NUMBER, JsonTokenType.LITERAL);
-        } else if (jsonTokenType == JsonTokenType.STRING) {
-            return Arrays.asList(JsonTokenType.RIGHT_BRACE, JsonTokenType.RIGHT_BRACKET, JsonTokenType.COLON, JsonTokenType.COMMA);
-        } else if (jsonTokenType == JsonTokenType.NUMBER) {
-            return Arrays.asList(JsonTokenType.RIGHT_BRACE, JsonTokenType.RIGHT_BRACKET, JsonTokenType.COLON);
-        } else if (jsonTokenType == JsonTokenType.LITERAL) {
-            return Arrays.asList(JsonTokenType.RIGHT_BRACE, JsonTokenType.RIGHT_BRACKET, JsonTokenType.COLON);
-        } else {
-            return null;
-        }
     }
 
 }

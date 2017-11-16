@@ -65,18 +65,6 @@ public class FileHandler {
         return ascii;
     }
 
-//    public void mark() {
-//        bufferedInputStream.mark(10);
-//    }
-//
-//    public void reset() {
-//        try {
-//            bufferedInputStream.reset();
-//        } catch (IOException ioe) {
-//            System.out.println("Blad resetowania znacznika pliku wejsciowego.");
-//        }
-//    }
-
     public void closeFiles() {
         try {
             closeInputFile();

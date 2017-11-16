@@ -1,0 +1,5 @@
+{
+    "description":"Unterminated string.",
+    "literal":"hi,
+    "code":500
+}

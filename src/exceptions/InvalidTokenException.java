@@ -45,7 +45,7 @@ public class InvalidTokenException extends Exception {
         }
 
         if (tokenType == null) {
-            message += String.format("read expression \"%s\", but expected VALID token.", tokenValue);
+            message += String.format("read expression \"%s\", but expected VALID type.", tokenValue);
         } else {
             message += String.format("read expression \"%s\", but expected %s type.", tokenValue, tokenType);
         }

@@ -1,5 +1,0 @@
-{
-    "description" : "Invalid escape sequence.",
-    "value" : "\x",
-    "code" : 600
-}

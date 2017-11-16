@@ -1,0 +1,5 @@
+{
+    "description":"Illegal octal literal.",
+    "literal":012,
+    "code":100
+}
