@@ -1,6 +1,7 @@
-{  
+{
+  "name":"someName",
    "glossary":{  
-      "title":"example glossary",
+      "name":"example glossary",
       "GlossDiv":{
          "number1":123.456,
          "number2":0.123e-465,

@@ -11,7 +11,6 @@ public class JsonArray extends JsonValue {
 
     public JsonArray(int row, int column) {
         super(row, column);
-        this.elements = new LinkedList<>();
     }
 
     public JsonArray(int row, int column, LinkedList<JsonValue> elements) {
@@ -29,7 +28,7 @@ public class JsonArray extends JsonValue {
 
     public void printNode(int depth) {
         super.printNode(depth, null);
-        if (!elements.isEmpty()) {
+        if (elements != null) {
             for (int i = 0; i < elements.size(); i++) {
                 elements.get(i).printNode(depth + 1);
             }

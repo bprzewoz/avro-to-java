@@ -1,84 +1,106 @@
 package avro.parser;
 
 import avro.type.AvroNode;
-import json.type.JsonNode;
+import avro.type.complex.AvroRecord;
+import files.FileHandler;
+import json.lexer.JsonLexer;
+import json.parser.JsonParser;
+import json.type.complex.JsonObject;
+
+import java.util.LinkedList;
 
 /**
  * Created by splbap on 2017-11-12.
  */
 public class AvroParser {
 
-    private JsonNode currentNode;
+    private JsonObject currentObject;
 
-    public AvroParser(JsonNode jsonRoot) {
-        this.currentNode = jsonRoot;
+    public static void main(String[] args) {
+        FileHandler fileHandler = new FileHandler("inputFile.txt", "outputFile.txt");
+        JsonLexer jsonLexer = new JsonLexer(fileHandler);
+        JsonParser jsonParser = new JsonParser(jsonLexer);
+        JsonObject jsonObject = jsonParser.parseFile();
+        if (jsonObject != null) {
+            AvroParser avroParser = new AvroParser(jsonObject);
+            avroParser.parseFile();
+        }
+        fileHandler.closeFiles();
     }
 
-    public AvroNode parseNode() {
-//        //AvroNodeType avroNodeType = AvroNodeType.valueOf(getPairValue("type", JsonNodeType.STRING));
-//        switch (avroNodeType) {
-//            case RECORD:
-//                return parseRecord();
-//            case ENUM:
-//                return parseEnum();
-//            case ARRAY:
-//                return parseArray();
-//            case MAP:
-//                return parseMap();
-//            case UNION:
-//                return parseUnion();
-//            case FIXED:
-//                return parseFixed();
-////            case
-////                return parsePrimitive();
-//        }
+    public AvroParser(JsonObject jsonObject) {
+        this.currentObject = jsonObject;
+    }
+
+    public AvroRecord parseFile() {
         return parseRecord();
     }
 
-    public AvroNode parseRecord() {
+    private AvroRecord parseRecord() {
+        String type = currentObject.getStringValue("type");
+        if (type == null || type.equals("record")) {
+            return null;
+        }
+
+        String name = currentObject.getStringValue("name");
+        if (name == null) {
+            return null;
+        }
+
+        String namespace = currentObject.getStringValue("namespace");
+        if (namespace == null) {
+            return null;
+        }
+
+        // parseFields() ?
+
+        return new AvroRecord(currentObject.getRow(), currentObject.getColumn(), name, namespace, new LinkedList<AvroNode>());
+    }
+
+    private AvroNode parseEnum() {
         return null;
     }
 
-    public AvroNode parseEnum() {
+    private AvroNode parseArray() {
         return null;
     }
 
-    public AvroNode parseArray() {
+    private AvroNode parseMap() {
         return null;
     }
 
-    public AvroNode parseMap() {
+    private AvroNode parseUnion() {
         return null;
     }
 
-    public AvroNode parseUnion() {
+    private AvroNode parseFixed() {
         return null;
     }
 
-    public AvroNode parseFixed() {
+    private AvroNode parsePrimitive() {
         return null;
     }
 
-    public void parsePrimitive() {
-
+    private AvroNode parseObject() {
+        AvroNode avroNode;
+        if ((avroNode = parseRecord()) != null) {
+            return avroNode;
+        } else if ((avroNode = parseEnum()) != null) {
+            return avroNode;
+        } else if ((avroNode = parseArray()) != null) {
+            return avroNode;
+        } else if ((avroNode = parseMap()) != null) {
+            return avroNode;
+        } else if ((avroNode = parseUnion()) != null) {
+            return avroNode;
+        } else if ((avroNode = parseFixed()) != null) {
+            return avroNode;
+        } else if ((avroNode = parsePrimitive()) != null) {
+            return avroNode;
+        } else {
+            //throw new UnexpectedTokenException(600, currentToken.getType());
+            return null;
+        }
     }
 
-    private String getPairValue(String string) {
-//        JsonNode nameNode;
-//        JsonNode parentNode;
-//        if ((parentNode = currentNode.getMember(string)) != null) {
-//            if (parentNode.getJsonNodeType() == JsonNodeType.PAIR) {
-//                if ((nameNode = parentNode.getMember(1)).getJsonNodeType() == jsonNodeType) {
-//                    return nameNode.getMember(1).getString();
-//                } else {
-//                    // throw
-//                }
-//            } else {
-//                // throw
-//            }
-//        } else {
-//            // throw
-//        }
-        return null;
-    }
 }

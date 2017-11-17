@@ -29,7 +29,7 @@ public class JsonParser {
     }
 
     public static void main(String[] args) {
-        FileHandler fileHandler = new FileHandler("tests/json/parser/values/value1.txt", "outputFile.txt");
+        FileHandler fileHandler = new FileHandler("inputFile.txt", "outputFile.txt");
         JsonLexer jsonLexer = new JsonLexer(fileHandler);
         JsonParser jsonParser = new JsonParser(jsonLexer);
         JsonObject jsonObject = jsonParser.parseFile();
