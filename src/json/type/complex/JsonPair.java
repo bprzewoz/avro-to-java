@@ -32,6 +32,16 @@ public class JsonPair extends JsonNode {
         this.value = value;
     }
 
+    public <T> T getValue(Class<T> tClass) {
+        JsonValue jsonValue = getValue();
+        if (jsonValue.getClass().equals(tClass)) {
+            T t = (T) jsonValue;
+            return t;
+        } else {
+            return null;
+        }
+    }
+
     public void printNode(int depth) {
         super.printNode(depth, key);
         value.printNode(depth + 1);

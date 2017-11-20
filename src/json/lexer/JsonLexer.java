@@ -37,19 +37,6 @@ public class JsonLexer {
         fileHandler.closeFiles();
     }
 
-    private char nextChar() {
-        int i = fileHandler.nextChar();
-        char c = (i == 13) ? '\n' : (char) i;
-        endOfFile = (i == -1);
-        if (c == '\n') {
-            column = 1;
-            row++;
-        } else {
-            column++;
-        }
-        return c;
-    }
-
     public JsonToken nextToken() {
         JsonToken jsonToken = null;
         while (isSpace(currentChar)) { // BIALE ZNAKI
@@ -57,7 +44,7 @@ public class JsonLexer {
         }
 
         if (endOfFile) { // KONIEC PLIKU
-            return new JsonToken(row, column, currentChar, JsonTokenType.EOF);
+            return new JsonToken(row, column, "EOF", JsonTokenType.EOF);
         }
 
         try {
@@ -94,13 +81,25 @@ public class JsonLexer {
             } else if (isLetter(currentChar)) {
                 return new JsonToken(row, column, readLiteral(), JsonTokenType.LITERAL);
             } else {
-                System.out.println((int) currentChar + "," + currentChar);
                 throw new InvalidTokenException(900, currentChar);
             }
         } catch (InvalidTokenException invalidTokenException) {
-            System.out.println("[ROW " + row + ", COL " + column + "] " + invalidTokenException.getMessage());
+            System.out.println(String.format("[ROW %d, COL %d] %s", row, column, invalidTokenException.getMessage()));
             return new JsonToken(row, column, "ERROR", JsonTokenType.ERROR);
         }
+    }
+
+    private char nextChar() {
+        int i = fileHandler.nextChar();
+        char c = (i == 13) ? '\n' : (char) i;
+        endOfFile = (i == -1);
+        if (c == '\n') {
+            column = 1;
+            row++;
+        } else {
+            column++;
+        }
+        return c;
     }
 
     private boolean isSpace(char c) {
@@ -127,9 +126,9 @@ public class JsonLexer {
         String string = "";
         while ((currentChar = nextChar()) != '"') {
             if (endOfFile) { // BRAK DOMKNIECIA
-                throw new InvalidTokenException(500, string, JsonTokenType.STRING.toString());
+                throw new InvalidTokenException(500, string, JsonTokenType.STRING);
             } else if (isSpecialCharacter(currentChar)) {
-                throw new InvalidTokenException(800, string + currentChar, JsonTokenType.STRING.toString());
+                throw new InvalidTokenException(800, string + currentChar, JsonTokenType.STRING);
             } else if (currentChar == '\\') { // ZNAKI SPECJALNE
                 currentChar = nextChar();
                 switch (currentChar) {
@@ -162,7 +161,7 @@ public class JsonLexer {
                         string += '\t';
                         break;
                     default:
-                        throw new InvalidTokenException(600, string, JsonTokenType.STRING.toString());
+                        throw new InvalidTokenException(600, string, JsonTokenType.STRING);
                 }
             } else {
                 string += currentChar;
@@ -178,7 +177,7 @@ public class JsonLexer {
             currentChar = nextChar();
             string += currentChar;
             if (!isHexadecimalDigit(currentChar)) {
-                throw new InvalidTokenException(700, string, JsonTokenType.STRING.toString());
+                throw new InvalidTokenException(700, string, JsonTokenType.STRING);
             }
         }
         return string;
@@ -193,7 +192,7 @@ public class JsonLexer {
             currentChar = nextChar();
             if (!isDigit(currentChar)) {
                 string += currentChar;
-                throw new InvalidTokenException(400, string, JsonTokenType.NUMBER.toString());
+                throw new InvalidTokenException(400, string, JsonTokenType.NUMBER);
             }
         }
 
@@ -202,7 +201,7 @@ public class JsonLexer {
             currentChar = nextChar();
             if (isDigit(currentChar)) {
                 string += currentChar;
-                throw new InvalidTokenException(100, string, JsonTokenType.NUMBER.toString());
+                throw new InvalidTokenException(100, string, JsonTokenType.NUMBER);
             }
         } else {
             string += readDigit();
@@ -216,7 +215,7 @@ public class JsonLexer {
                 string += readDigit();
             } else {
                 string += currentChar;
-                throw new InvalidTokenException(300, string, JsonTokenType.NUMBER.toString());
+                throw new InvalidTokenException(300, string, JsonTokenType.NUMBER);
             }
         }
 
@@ -232,7 +231,7 @@ public class JsonLexer {
                 string += readDigit();
             } else {
                 string += currentChar;
-                throw new InvalidTokenException(200, string, JsonTokenType.NUMBER.toString());
+                throw new InvalidTokenException(200, string, JsonTokenType.NUMBER);
             }
         }
 
@@ -304,7 +303,7 @@ public class JsonLexer {
             currentChar = nextChar();
             return string;
         } else {
-            throw new InvalidTokenException(900, string, JsonTokenType.LITERAL.toString());
+            throw new InvalidTokenException(900, string, JsonTokenType.LITERAL);
         }
     }
 }

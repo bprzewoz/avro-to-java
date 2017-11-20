@@ -1,28 +1,23 @@
 {
-  "name":"someName",
-   "glossary":{  
-      "name":"example glossary",
-      "GlossDiv":{
-         "number1":123.456,
-         "number2":0.123e-465,
-         "title":"S",
-         "GlossList":{  
-            "GlossEntry":{  
-               "ID":"SGML",
-               "SortAs":"SGML",
-               "GlossTerm":"Standard Generalized Markup Language",
-               "Acronym":"SGML",
-               "Abbrev":"ISO 8879:1986",
-               "GlossDef":{  
-                  "para":"A meta-markup language, used to create markup languages such as DocBook.",
-                  "GlossSeeAlso":[  
-                     "GML",
-                     "XML"
-                  ]
-               },
-               "GlossSee":"markup"
-            }
-         }
-      }
-   }
+  "type": "record",
+  "name": "Movie",
+  "namespace": "org.kitesdk.examples.data",
+  "fields": [
+    {
+      "name": "id",
+      "type": "int"
+    },
+    {
+      "name": "title",
+      "type": "string"
+    },
+    {
+      "name": "releaseDate",
+      "type": "string"
+    },
+    {
+      "name": "imdbUrl",
+      "type": "string"
+    }
+  ]
 }

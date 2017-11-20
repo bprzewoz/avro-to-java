@@ -3,7 +3,7 @@ package json.type;
 /**
  * Created by splbap on 2017-11-16.
  */
-public class JsonNode {
+public abstract class JsonNode {
 
     private int row;
     private int column;

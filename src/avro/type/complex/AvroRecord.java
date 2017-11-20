@@ -18,12 +18,30 @@ public class AvroRecord extends AvroNode {
         this.fields = fields;
     }
 
-    public LinkedList<AvroNode> getMembers() {
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+
+    public LinkedList<AvroNode> getFields() {
         return fields;
     }
 
-    public void setMembers(LinkedList<AvroNode> fields) {
+    public void setFields(LinkedList<AvroNode> fields) {
         this.fields = fields;
     }
+
+    public void printNode(int depth) {
+        super.printNode(depth);
+        for (AvroNode avroNode : fields) {
+            if (avroNode != null) { // NA CZAS TESTOW
+                avroNode.printNode(depth + 1);
+            }
+        }
+    }
+
 
 }

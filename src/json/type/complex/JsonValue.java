@@ -7,7 +7,7 @@ import json.type.JsonNode;
  */
 public abstract class JsonValue extends JsonNode {
 
-    public JsonValue(int row, int column){
+    public JsonValue(int row, int column) {
         super(row, column);
     }
 

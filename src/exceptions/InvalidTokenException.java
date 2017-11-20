@@ -1,5 +1,7 @@
 package exceptions;
 
+import json.token.JsonTokenType;
+
 /**
  * Created by splbap on 2017-10-17.
  */
@@ -8,11 +10,11 @@ public class InvalidTokenException extends Exception {
 
     private String message;
 
-    public InvalidTokenException(int errorCode, char tokenValue) {
-        this(errorCode, String.valueOf(tokenValue), null);
+    public InvalidTokenException(int errorCode, char jsonToken) {
+        this(errorCode, String.valueOf(jsonToken), null);
     }
 
-    public InvalidTokenException(int errorCode, String tokenValue, String tokenType) {
+    public InvalidTokenException(int errorCode, String jsonToken, JsonTokenType jsonTokenType) {
         message = String.format("(INVALID TOKEN EXCEPTION %d) ", errorCode);
         switch (errorCode) {
             case 100:
@@ -44,10 +46,10 @@ public class InvalidTokenException extends Exception {
                 break;
         }
 
-        if (tokenType == null) {
-            message += String.format("read expression \"%s\", but expected VALID type.", tokenValue);
+        if (jsonTokenType == null) {
+            message += String.format("read expression \"%s\", but expected VALID type.", jsonToken);
         } else {
-            message += String.format("read expression \"%s\", but expected %s type.", tokenValue, tokenType);
+            message += String.format("read expression \"%s\", but expected %s type.", jsonToken, jsonTokenType.toString());
         }
     }
 

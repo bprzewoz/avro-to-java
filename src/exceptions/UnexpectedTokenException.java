@@ -1,6 +1,6 @@
 package exceptions;
 
-import json.token.JsonTokenType;
+import json.token.JsonToken;
 
 /**
  * Created by splbap on 2017-11-01.
@@ -9,14 +9,14 @@ public class UnexpectedTokenException extends Exception {
 
     private String message;
 
-    public UnexpectedTokenException(int errorCode, JsonTokenType jsonTokenType) {
-        message = String.format("(UNEXPECTED TOKEN EXCEPTION %d) ", errorCode);
+    public UnexpectedTokenException(int errorCode, JsonToken jsonToken) {
+        message = String.format("[ROW %d, COL %d] (UNEXPECTED TOKEN EXCEPTION %d) ", jsonToken.getRow(), jsonToken.getColumn(), errorCode);
         switch (errorCode) {
             case 100:
                 message += "Object parsing error: expected LEFT_BRACE '{' at start of object, ";
                 break;
             case 200:
-                message += "Members parsing error: expected COMMA ',' or RIGHT_BRACE '}' after property primitive in object, ";
+                message += "Members parsing error: expected COMMA ',' or RIGHT_BRACE '}' after VALUE in object, ";
                 break;
             case 300:
                 message += "Pair parsing error: expected STRING name or RIGHT_BRACE ‘}’ in object, ";
@@ -32,7 +32,7 @@ public class UnexpectedTokenException extends Exception {
                 break;
         }
 
-        message += String.format("but read token %s type.", jsonTokenType);
+        message += String.format("but read token %s type.", jsonToken.getType());
     }
 
     public String getMessage() {

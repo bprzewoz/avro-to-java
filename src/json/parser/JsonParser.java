@@ -45,10 +45,10 @@ public class JsonParser {
             if (jsonObject != null) {
                 return jsonObject;
             } else {
-                throw new UnexpectedTokenException(100, currentToken.getType());
+                throw new UnexpectedTokenException(100, currentToken);
             }
         } catch (UnexpectedTokenException unexpectedTokenException) {
-            System.out.println("[ROW " + currentToken.getRow() + ", COL " + currentToken.getColumn() + "] " + unexpectedTokenException.getMessage());
+            System.out.println(String.format("[ROW %d, COL %d] %s", currentToken.getRow(), currentToken.getColumn(), unexpectedTokenException.getMessage()));
             return null;
         }
     }
@@ -63,7 +63,7 @@ public class JsonParser {
 
         if ((currentToken = jsonLexer.nextToken()).getType() == JsonTokenType.RIGHT_BRACE) { // EMPTY OBJECT
             currentToken = jsonLexer.nextToken();
-            return new JsonObject(row, column);
+            return new JsonObject(row, column, new LinkedList<>());
         }
 
         LinkedList<JsonPair> members = parseMembers();
@@ -82,7 +82,7 @@ public class JsonParser {
         }
         while (currentToken.getType() == JsonTokenType.COMMA && (currentToken = jsonLexer.nextToken()).getType() != null);
 
-        throw new UnexpectedTokenException(200, currentToken.getType());
+        throw new UnexpectedTokenException(200, currentToken);
     }
 
     private JsonPair parsePair() throws UnexpectedTokenException {
@@ -90,14 +90,14 @@ public class JsonParser {
         if (currentToken.getType() == JsonTokenType.STRING) {
             key = currentToken.getValue();
         } else {
-            throw new UnexpectedTokenException(300, currentToken.getType());
+            throw new UnexpectedTokenException(300, currentToken);
         }
 
         int row = currentToken.getRow();
         int column = currentToken.getColumn();
 
         if ((currentToken = jsonLexer.nextToken()).getType() != JsonTokenType.COLON) {
-            throw new UnexpectedTokenException(400, currentToken.getType());
+            throw new UnexpectedTokenException(400, currentToken);
         }
 
         currentToken = jsonLexer.nextToken();
@@ -115,7 +115,7 @@ public class JsonParser {
 
         if ((currentToken = jsonLexer.nextToken()).getType() == JsonTokenType.RIGHT_BRACKET) { // EMPTY ARRAY
             currentToken = jsonLexer.nextToken();
-            return new JsonArray(row, column);
+            return new JsonArray(row, column, new LinkedList<>());
         }
 
         LinkedList<JsonValue> elements = parseElements();
@@ -133,7 +133,7 @@ public class JsonParser {
         }
         while (currentToken.getType() == JsonTokenType.COMMA && (currentToken = jsonLexer.nextToken()).getType() != null);
 
-        throw new UnexpectedTokenException(500, currentToken.getType());
+        throw new UnexpectedTokenException(500, currentToken);
     }
 
     private JsonValue parseValue() throws UnexpectedTokenException {
@@ -149,7 +149,7 @@ public class JsonParser {
         } else if ((jsonValue = parseLiteral()) != null) {
             return jsonValue;
         } else {
-            throw new UnexpectedTokenException(600, currentToken.getType());
+            throw new UnexpectedTokenException(600, currentToken);
         }
     }
 

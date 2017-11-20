@@ -1,7 +1,5 @@
 package json.type.complex;
 
-import json.type.primitive.JsonString;
-
 import java.util.LinkedList;
 
 /**
@@ -29,7 +27,7 @@ public class JsonObject extends JsonValue {
         this.members = members;
     }
 
-    private JsonPair getMember(String key) {
+    public JsonPair getMember(String key) {
         for (JsonPair jsonPair : members) {
             if (jsonPair.getKey().equals(key)) {
                 return jsonPair;
@@ -38,7 +36,14 @@ public class JsonObject extends JsonValue {
         return null;
     }
 
-    public <T> T getMemberValue(String key, Class<T> tClass) {
+    public void printNode(int depth) {
+        super.printNode(depth, null);
+        for (JsonPair jsonPair : members) {
+            jsonPair.printNode(depth + 1);
+        }
+    }
+
+    public <T> T getAttribute(String key, Class<T> tClass, boolean required) throws Exception {
         JsonPair jsonPair = getMember(key);
         if (jsonPair != null) {
             JsonValue jsonValue = jsonPair.getValue();
@@ -46,29 +51,17 @@ public class JsonObject extends JsonValue {
                 T t = (T) jsonValue;
                 return t;
             } else {
-                // throw
-                return null;
+                if (required) {
+                    throw new Exception(); // WRONG TYPE
+                } else {
+                    return null;
+                }
             }
         } else {
-            // throw
-            return null;
-        }
-    }
-
-    public String getStringValue(String key) {
-        JsonString jsonString = getMemberValue(key, JsonString.class);
-        if (jsonString != null) {
-            return value;
-        } else {
-            return null;
-        }
-    }
-
-    public void printNode(int depth) {
-        super.printNode(depth, null);
-        if (members != null) {
-            for (int i = 0; i < members.size(); i++) {
-                members.get(i).printNode(depth + 1);
+            if (required) {
+                throw new Exception(); // MISSING ATTRIBUTE
+            } else {
+                return null;
             }
         }
     }
