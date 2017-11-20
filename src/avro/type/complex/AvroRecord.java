@@ -43,5 +43,4 @@ public class AvroRecord extends AvroNode {
         }
     }
 
-
 }
