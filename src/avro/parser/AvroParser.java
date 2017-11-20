@@ -1,9 +1,8 @@
 package avro.parser;
 
 import avro.type.AvroField;
-import avro.type.AvroNode;
-import avro.type.complex.AvroEnum;
-import avro.type.complex.AvroRecord;
+import avro.type.AvroType;
+import avro.type.complex.*;
 import avro.type.primitive.*;
 import files.FileHandler;
 import json.lexer.JsonLexer;
@@ -31,7 +30,7 @@ public class AvroParser {
     }
 
     public static void main(String[] args) {
-        FileHandler fileHandler = new FileHandler("inputFile.txt", "outputFile.txt");
+        FileHandler fileHandler = new FileHandler("complexFile.txt", "outputFile.txt");
         JsonLexer jsonLexer = new JsonLexer(fileHandler);
         JsonParser jsonParser = new JsonParser(jsonLexer);
         JsonObject jsonObject = jsonParser.parseFile();
@@ -63,20 +62,20 @@ public class AvroParser {
             return null;
         }
 
-        checkAttributes(new LinkedList<String>(Arrays.asList("type", "namespace", "name", "fields")));
-        String namespace = getAttribute("namespace", JsonString.class, true).getValue();
         String name = getAttribute("name", JsonString.class, true).getValue();
+        String namespace = getAttribute("namespace", JsonString.class, true).getValue();
 
-        return new AvroRecord(currentObject.getRow(), currentObject.getColumn(), name, namespace, parseFields());
+        checkAttributes(new LinkedList<String>(Arrays.asList("type", "namespace", "name", "fields")));
+        return new AvroRecord(name, namespace, parseFields());
     }
 
-    private LinkedList<AvroNode> parseFields() throws Exception {
-        LinkedList<AvroNode> fields = new LinkedList<>();
+    private LinkedList<AvroField> parseFields() throws Exception {
+        LinkedList<AvroField> fields = new LinkedList<>();
         for (JsonValue jsonValue : getAttribute("fields", JsonArray.class, true).getElements()) {
             if (jsonValue.getClass().equals(JsonObject.class)) {
                 currentObject = (JsonObject) jsonValue;
-                fields.add(parseObject());
-                //fields.add(parseField());
+                //fields.add(parseObject());
+                fields.add(parseField());
             } else {
                 System.out.println("NOT OBJECT");
                 throw new Exception(); // NOT OBJECT
@@ -114,7 +113,7 @@ public class AvroParser {
         String namespace = getAttribute("namespace", JsonString.class, true).getValue();
         String name = getAttribute("name", JsonString.class, true).getValue();
 
-        return new AvroEnum(currentObject.getRow(), currentObject.getColumn(), name, namespace, parseSymbols());
+        return new AvroEnum(name, namespace, parseSymbols());
     }
 
     private LinkedList<String> parseSymbols() throws Exception {
@@ -136,7 +135,7 @@ public class AvroParser {
         return symbols;
     }
 
-    private AvroNode parseArray() throws Exception { // DZIWNE PARSOWANIE
+    private AvroArray parseArray() throws Exception { // DZIWNE PARSOWANIE
         JsonObject typeObject = getAttribute("type", JsonObject.class, false);
         if (typeObject != null) {
             JsonString type = getAttribute("type", JsonString.class, false);
@@ -153,7 +152,7 @@ public class AvroParser {
         return null;
     }
 
-    private AvroNode parseMap() throws Exception {
+    private AvroMap parseMap() throws Exception {
         JsonString type = getAttribute("type", JsonString.class, false);
         if (type == null || !type.getValue().equals("map")) {
             return null;
@@ -164,7 +163,7 @@ public class AvroParser {
         return null;
     }
 
-    private AvroNode parseUnion() throws Exception {
+    private AvroUnion parseUnion() throws Exception {
         JsonArray type = getAttribute("type", JsonArray.class, false);
         if (type == null) {
             return null;
@@ -175,7 +174,7 @@ public class AvroParser {
         return null;
     }
 
-    private AvroNode parseFixed() throws Exception {
+    private AvroFixed parseFixed() throws Exception {
         JsonString type = getAttribute("type", JsonString.class, false);
         if (type == null || !type.getValue().equals("fixed")) {
             return null;
@@ -198,7 +197,7 @@ public class AvroParser {
         JsonString jsonString = getAttribute("default", JsonString.class, false);
         String dflt = jsonString != null ? jsonString.getValue() : null;
 
-        return new AvroString(currentObject.getRow(), currentObject.getColumn(), name, dflt);
+        return new AvroString(dflt);
     }
 
     private AvroBytes parseBytes() throws Exception {
@@ -211,7 +210,7 @@ public class AvroParser {
         JsonString jsonString = getAttribute("default", JsonString.class, false);
         String dflt = jsonString != null ? jsonString.getValue() : null;
 
-        return new AvroBytes(currentObject.getRow(), currentObject.getColumn(), name, dflt);
+        return new AvroBytes(dflt);
     }
 
     private AvroDouble parseDouble() throws Exception {
@@ -224,7 +223,7 @@ public class AvroParser {
         JsonNumber jsonNumber = getAttribute("default", JsonNumber.class, false);
         String dflt = jsonNumber != null ? jsonNumber.getValue() : null;
 
-        return new AvroDouble(currentObject.getRow(), currentObject.getColumn(), name, dflt);
+        return new AvroDouble(dflt);
     }
 
     private AvroFloat parseFloat() throws Exception {
@@ -237,7 +236,7 @@ public class AvroParser {
         JsonNumber jsonNumber = getAttribute("default", JsonNumber.class, false);
         String dflt = jsonNumber != null ? jsonNumber.getValue() : null;
 
-        return new AvroFloat(currentObject.getRow(), currentObject.getColumn(), name, dflt);
+        return new AvroFloat(dflt);
     }
 
     private AvroLong parseLong() throws Exception {
@@ -250,7 +249,7 @@ public class AvroParser {
         JsonNumber jsonNumber = getAttribute("default", JsonNumber.class, false);
         String dflt = jsonNumber != null ? jsonNumber.getValue() : null;
 
-        return new AvroLong(currentObject.getRow(), currentObject.getColumn(), name, dflt);
+        return new AvroLong(dflt);
     }
 
     private AvroInt parseInt() throws Exception {
@@ -263,7 +262,7 @@ public class AvroParser {
         JsonNumber jsonNumber = getAttribute("default", JsonNumber.class, false);
         String dflt = jsonNumber != null ? jsonNumber.getValue() : null;
 
-        return new AvroInt(currentObject.getRow(), currentObject.getColumn(), name, dflt);
+        return new AvroInt(dflt);
     }
 
     private AvroBoolean parseBoolean() throws Exception {
@@ -276,17 +275,17 @@ public class AvroParser {
         JsonLiteral jsonLiteral = getAttribute("default", JsonLiteral.class, false);
         String dflt = jsonLiteral != null ? jsonLiteral.getValue() : null;
 
-        return new AvroBoolean(currentObject.getRow(), currentObject.getColumn(), name, dflt);
+        return new AvroBoolean(dflt);
     }
 
     // PARSE OBJECT
 
-    private AvroNode parseObject() throws Exception {
-        AvroNode avroNode;
-        if ((avroNode = parseComplex()) != null) {
-            return avroNode;
-        } else if ((avroNode = parsePrimitive()) != null) {
-            return avroNode;
+    private AvroType parseObject() throws Exception {
+        AvroType avroType;
+        if ((avroType = parseComplex()) != null) {
+            return avroType;
+        } else if ((avroType = parsePrimitive()) != null) {
+            return avroType;
         } else {
             System.out.println("MISSING TYPE");
             //throw new UnexpectedTokenException(600, currentToken.getType());
@@ -294,41 +293,41 @@ public class AvroParser {
         }
     }
 
-    private AvroNode parseComplex() throws Exception {
-        AvroNode avroNode;
-        if ((avroNode = parseRecord()) != null) {
-            return avroNode;
-        } else if ((avroNode = parseEnum()) != null) {
-            return avroNode;
-        } else if ((avroNode = parseArray()) != null) {
-            return avroNode;
-        } else if ((avroNode = parseMap()) != null) {
-            return avroNode;
-        } else if ((avroNode = parseUnion()) != null) {
-            return avroNode;
-        } else if ((avroNode = parseFixed()) != null) {
-            return avroNode;
+    private AvroType parseComplex() throws Exception {
+        AvroType avroType;
+        if ((avroType = parseRecord()) != null) {
+            return avroType;
+        } else if ((avroType = parseEnum()) != null) {
+            return avroType;
+        } else if ((avroType = parseArray()) != null) {
+            return avroType;
+        } else if ((avroType = parseMap()) != null) {
+            return avroType;
+        } else if ((avroType = parseUnion()) != null) {
+            return avroType;
+        } else if ((avroType = parseFixed()) != null) {
+            return avroType;
         } else {
             return null;
         }
     }
 
-    private AvroNode parsePrimitive() throws Exception {
-        AvroNode avroNode;
-        if ((avroNode = parseString()) != null) {
-            return avroNode;
-        } else if ((avroNode = parseBytes()) != null) {
-            return avroNode;
-        } else if ((avroNode = parseDouble()) != null) {
-            return avroNode;
-        } else if ((avroNode = parseFloat()) != null) {
-            return avroNode;
-        } else if ((avroNode = parseLong()) != null) {
-            return avroNode;
-        } else if ((avroNode = parseInt()) != null) {
-            return avroNode;
-        } else if ((avroNode = parseBoolean()) != null) {
-            return avroNode;
+    private AvroType parsePrimitive() throws Exception {
+        AvroType avroType;
+        if ((avroType = parseString()) != null) {
+            return avroType;
+        } else if ((avroType = parseBytes()) != null) {
+            return avroType;
+        } else if ((avroType = parseDouble()) != null) {
+            return avroType;
+        } else if ((avroType = parseFloat()) != null) {
+            return avroType;
+        } else if ((avroType = parseLong()) != null) {
+            return avroType;
+        } else if ((avroType = parseInt()) != null) {
+            return avroType;
+        } else if ((avroType = parseBoolean()) != null) {
+            return avroType;
         } else {
             return null;
         }

@@ -1,16 +1,15 @@
 package avro.type.primitive;
 
-import avro.type.AvroNode;
+import avro.type.AvroType;
 
 /**
  * Created by splbap on 2017-11-19.
  */
-public class AvroInt extends AvroNode {
+public class AvroInt extends AvroType {
 
     private int dflt;
 
-    public AvroInt(int row, int column, String name, String dflt) {
-        super(row, column, name);
+    public AvroInt(String dflt) {
         if (dflt != null) {
             this.dflt = Integer.parseInt(dflt);
         }

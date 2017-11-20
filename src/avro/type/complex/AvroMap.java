@@ -1,16 +1,15 @@
 package avro.type.complex;
 
-import avro.type.AvroNode;
+import avro.type.AvroType;
 
 /**
  * Created by splbap on 2017-11-20.
  */
-public class AvroMap extends AvroNode {
+public class AvroMap extends AvroType {
 
     private String values;
 
-    public AvroMap(int row, int column, String name, String values) {
-        super(row, column, name);
+    public AvroMap(String values) {
         this.values = values;
     }
 

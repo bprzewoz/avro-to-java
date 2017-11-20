@@ -6,9 +6,9 @@ package avro.type;
 public class AvroField {
 
     private String name;
-    private AvroNode type;
+    private AvroType type;
 
-    public AvroField(String name, AvroNode type) {
+    public AvroField(String name, AvroType type) {
         this.name = name;
         this.type = type;
     }
@@ -21,11 +21,11 @@ public class AvroField {
         this.name = name;
     }
 
-    public AvroNode getType() {
+    public AvroType getType() {
         return type;
     }
 
-    public void setType(AvroNode type) {
+    public void setType(AvroType type) {
         this.type = type;
     }
 

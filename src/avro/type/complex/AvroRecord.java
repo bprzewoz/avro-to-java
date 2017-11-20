@@ -1,21 +1,31 @@
 package avro.type.complex;
 
-import avro.type.AvroNode;
+import avro.type.AvroField;
+import avro.type.AvroType;
 
 import java.util.LinkedList;
 
 /**
  * Created by splbap on 2017-11-16.
  */
-public class AvroRecord extends AvroNode {
+public class AvroRecord extends AvroType {
 
+    private String name;
     private String namespace;
-    private LinkedList<AvroNode> fields;
+    private LinkedList<AvroField> fields;
 
-    public AvroRecord(int row, int column, String name, String namespace, LinkedList<AvroNode> fields) {
-        super(row, column, name);
+    public AvroRecord(String name, String namespace, LinkedList<AvroField> fields) {
+        this.name = name;
         this.namespace = namespace;
         this.fields = fields;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getNamespace() {
@@ -26,19 +36,19 @@ public class AvroRecord extends AvroNode {
         this.namespace = namespace;
     }
 
-    public LinkedList<AvroNode> getFields() {
+    public LinkedList<AvroField> getFields() {
         return fields;
     }
 
-    public void setFields(LinkedList<AvroNode> fields) {
+    public void setFields(LinkedList<AvroField> fields) {
         this.fields = fields;
     }
 
     public void printNode(int depth) {
         super.printNode(depth);
-        for (AvroNode avroNode : fields) {
-            if (avroNode != null) { // NA CZAS TESTOW
-                avroNode.printNode(depth + 1);
+        for (AvroField avroField : fields) {
+            if (avroField != null) { // NA CZAS TESTOW
+                avroField.printNode(depth + 1);
             }
         }
     }

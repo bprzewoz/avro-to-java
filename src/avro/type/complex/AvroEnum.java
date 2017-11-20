@@ -1,21 +1,30 @@
 package avro.type.complex;
 
-import avro.type.AvroNode;
+import avro.type.AvroType;
 
 import java.util.LinkedList;
 
 /**
  * Created by splbap on 2017-11-20.
  */
-public class AvroEnum extends AvroNode {
+public class AvroEnum extends AvroType {
 
+    private String name;
     private String namespace;
     private LinkedList<String> symbols;
 
-    public AvroEnum(int row, int column, String name, String namespace, LinkedList<String> symbols) {
-        super(row, column, name);
+    public AvroEnum(String name, String namespace, LinkedList<String> symbols) {
+        this.name = name;
         this.namespace = namespace;
         this.symbols = symbols;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getNamespace() {

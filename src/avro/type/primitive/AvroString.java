@@ -1,16 +1,15 @@
 package avro.type.primitive;
 
-import avro.type.AvroNode;
+import avro.type.AvroType;
 
 /**
  * Created by splbap on 2017-11-18.
  */
-public class AvroString extends AvroNode {
+public class AvroString extends AvroType {
 
     private String dflt;
 
-    public AvroString(int row, int column, String name, String dflt) {
-        super(row, column, name);
+    public AvroString(String dflt) {
         this.dflt = dflt;
     }
 
