@@ -7,20 +7,34 @@ import avro.type.AvroType;
  */
 public class AvroDouble extends AvroType {
 
-    private double dflt;
+    private double value;
+    private String defaultValue;
 
-    public AvroDouble(String dflt) {
-        if (dflt != null) {
-            this.dflt = Double.parseDouble(dflt);
+    public AvroDouble(String defaultValue) {
+        this.defaultValue = defaultValue;
+        if (defaultValue != null) {
+            this.value = Double.parseDouble(defaultValue);
         }
     }
 
-    public double getDflt() {
-        return dflt;
+    public double getValue() {
+        return value;
     }
 
-    public void setDflt(double dflt) {
-        this.dflt = dflt;
+    public void setValue(double value) {
+        this.value = value;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue != null ? String.format(" = %s", defaultValue) : "";
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public String getJavaType() {
+        return "double";
     }
 
 }

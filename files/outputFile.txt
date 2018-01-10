@@ -1,0 +1,104 @@
+package com.sksamuel.avro4s.json;
+
+public class Pizza {
+
+	private String name;
+	private Ingredient[] ingredients;
+	private boolean vegetarian;
+	private boolean vegan;
+	private int calories;
+
+	public Pizza () {
+	}
+
+	public Pizza (String name, Ingredient[] ingredients, boolean vegetarian, boolean vegan, int calories) {
+		this.name = name;
+		this.ingredients = ingredients;
+		this.vegetarian = vegetarian;
+		this.vegan = vegan;
+		this.calories = calories;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Ingredient[] getIngredients() {
+		return ingredients;
+	}
+
+	public void setIngredients(Ingredient[] ingredients) {
+		this.ingredients = ingredients;
+	}
+
+	public boolean getVegetarian() {
+		return vegetarian;
+	}
+
+	public void setVegetarian(boolean vegetarian) {
+		this.vegetarian = vegetarian;
+	}
+
+	public boolean getVegan() {
+		return vegan;
+	}
+
+	public void setVegan(boolean vegan) {
+		this.vegan = vegan;
+	}
+
+	public int getCalories() {
+		return calories;
+	}
+
+	public void setCalories(int calories) {
+		this.calories = calories;
+	}
+
+}
+
+class Ingredient {
+
+	private String name;
+	private double sugar = 1.0;
+	private double fat;
+
+	public Ingredient () {
+	}
+
+	public Ingredient (String name, double sugar, double fat) {
+		this.name = name;
+		this.sugar = sugar;
+		this.fat = fat;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public double getSugar() {
+		return sugar;
+	}
+
+	public void setSugar(double sugar) {
+		this.sugar = sugar;
+	}
+
+	public double getFat() {
+		return fat;
+	}
+
+	public void setFat(double fat) {
+		this.fat = fat;
+	}
+
+}
+

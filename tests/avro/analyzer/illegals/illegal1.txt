@@ -1,0 +1,24 @@
+{
+  "type": "record",
+  "name": "Movie",
+  "namespace": "org.kitesdk.examples.data",
+  "fields": [
+    "type",
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "title",
+      "type": "string"
+    },
+    {
+      "name": "releaseDate",
+      "type": "string"
+    },
+    {
+      "name": "imdbUrl",
+      "type": "string"
+    }
+  ]
+}

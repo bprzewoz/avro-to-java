@@ -1,0 +1,33 @@
+{
+   "type":"record",
+   "name":"Movie",
+   "namespace":"org.kitesdk.examples.data",
+   "fields":[
+      {
+         "name":"id",
+         "type":{
+            "type":"enum",
+            "name":"Suit",
+            "symbols":[
+               "SPADES",
+               "HEARTS",
+               "DIAMONDS",
+               "CLUBS",
+               "CLUBS"
+            ]
+         }
+      },
+      {
+         "name":"title",
+         "type":"string"
+      },
+      {
+         "name":"releaseDate",
+         "type":"string"
+      },
+      {
+         "name":"imdbUrl",
+         "type":"string"
+      }
+   ]
+}

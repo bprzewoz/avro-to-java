@@ -53,4 +53,51 @@ public class AvroRecord extends AvroType {
         }
     }
 
+    public String getJavaType() {
+        return name;
+    }
+
+    public String generateJavaCode() {
+        String string = "";
+
+        if (namespace != null) {
+            string += String.format("package %s;\n\npublic ", namespace); // NAZWA PAKIETU
+        }
+
+        string += String.format("class %s {\n\n", name); // NAZWA KLASY
+
+        for (AvroField avroField : fields) { // DEKLARACJE ZMIENNYCH
+            string += String.format("%s\n", avroField.getJavaDeclaration());
+            if (fields.getLast().equals(avroField)) {
+                string += "\n";
+            }
+        }
+
+        string += String.format("\tpublic %s () {\n\t}\n\n", name); // KONSTRUKTOR BEZARGUMENTOWY
+
+        { // KONSTRUKTOR ARGUMENTOWY
+            string += String.format("\tpublic %s (", name);
+            for (AvroField avroField : fields) {
+                string += String.format("%s %s", avroField.getType().getJavaType(), avroField.getName());
+                if (!fields.getLast().equals(avroField)) {
+                    string += ", ";
+                }
+            }
+            string += ") {\n";
+            for (AvroField avroField : fields) {
+                string += String.format("\t\tthis.%s = %s;\n", avroField.getName(), avroField.getName());
+            }
+            string += "\t}\n\n";
+        }
+
+        for (AvroField avroField : fields) {
+            string += String.format("%s\n", avroField.getJavaGetter());
+            string += String.format("%s\n", avroField.getJavaSetter());
+        }
+
+        string += "}\n\n";
+
+        return string;
+    }
+
 }

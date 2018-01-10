@@ -43,4 +43,30 @@ public class AvroEnum extends AvroType {
         this.symbols = symbols;
     }
 
+    public String getJavaType() {
+        return name;
+    }
+
+    public String generateJavaCode() {
+        String string = "";
+
+        if (namespace != null) {
+            string += String.format("package %s;\n\npublic ", namespace);
+        }
+
+        string += String.format("enum %s {\n\n", name);
+
+        for (String symbol : symbols) {
+            string += String.format("\n%s", symbol);
+            if (!symbols.getLast().equals(symbol)) {
+                string += ",\n";
+            } else {
+                string += "\n";
+            }
+        }
+
+        string += "}\n\n";
+        return string;
+    }
+
 }

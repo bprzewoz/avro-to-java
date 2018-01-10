@@ -7,20 +7,34 @@ import avro.type.AvroType;
  */
 public class AvroLong extends AvroType {
 
-    private long dflt;
+    private long value;
+    private String defaultValue;
 
-    public AvroLong(String dflt) {
-        if (dflt != null) {
-            this.dflt = Long.parseLong(dflt);
+    public AvroLong(String defaultValue) {
+        this.defaultValue = defaultValue;
+        if (defaultValue != null) {
+            this.value = Long.parseLong(defaultValue);
         }
     }
 
-    public long getDflt() {
-        return dflt;
+    public long getValue() {
+        return value;
     }
 
-    public void setDflt(long dflt) {
-        this.dflt = dflt;
+    public void setValue(long value) {
+        this.value = value;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue != null ? String.format(" = %s", defaultValue) : "";
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public String getJavaType() {
+        return "long";
     }
 
 }

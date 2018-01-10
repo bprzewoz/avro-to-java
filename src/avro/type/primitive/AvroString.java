@@ -7,18 +7,22 @@ import avro.type.AvroType;
  */
 public class AvroString extends AvroType {
 
-    private String dflt;
+    private String defaultValue;
 
-    public AvroString(String dflt) {
-        this.dflt = dflt;
+    public AvroString(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
 
-    public String getDflt() {
-        return dflt;
+    public String getDefaultValue() {
+        return defaultValue != null ? String.format(" = %s", defaultValue) : "";
     }
 
-    public void setDflt(String dflt) {
-        this.dflt = dflt;
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public String getJavaType() {
+        return "String";
     }
 
 }

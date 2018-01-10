@@ -7,18 +7,34 @@ import avro.type.AvroType;
  */
 public class AvroBytes extends AvroType {
 
-    private String dflt;
+    private byte value;
+    private String defaultValue;
 
-    public AvroBytes(String dflt) {
-        this.dflt = dflt;
+    public AvroBytes(String defaultValue) {
+        this.defaultValue = defaultValue;
+        if (defaultValue != null) {
+            this.value = Byte.parseByte(defaultValue);
+        }
     }
 
-    public String getDflt() {
-        return dflt;
+    public byte getValue() {
+        return value;
     }
 
-    public void setDflt(String dflt) {
-        this.dflt = dflt;
+    public void setValue(byte value) {
+        this.value = value;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue != null ? String.format(" = %s", defaultValue) : "";
+    }
+
+    public void setDefaultValue(String defaultValue){
+        this.defaultValue = defaultValue;
+    }
+
+    public String getJavaType() {
+        return "byte";
     }
 
 }

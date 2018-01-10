@@ -7,20 +7,34 @@ import avro.type.AvroType;
  */
 public class AvroBoolean extends AvroType {
 
-    private boolean dflt;
+    private boolean value;
+    private String defaultValue;
 
-    public AvroBoolean(String dflt) {
-        if (dflt != null) {
-            this.dflt = Boolean.parseBoolean(dflt);
+    public AvroBoolean(String defaultValue) {
+        this.defaultValue = defaultValue;
+        if (defaultValue != null) {
+            this.value = Boolean.parseBoolean(defaultValue);
         }
     }
 
-    public boolean getDflt() {
-        return dflt;
+    public boolean getValue() {
+        return value;
     }
 
-    public void setDflt(boolean dflt) {
-        this.dflt = dflt;
+    public void setValue(boolean value) {
+        this.value = value;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue != null ? String.format(" = %s", defaultValue) : "";
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public String getJavaType() {
+        return "boolean";
     }
 
 }

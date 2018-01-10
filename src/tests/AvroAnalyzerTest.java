@@ -1,16 +1,20 @@
 package tests;
 
+import avro.analyzer.AvroAnalyzer;
+import avro.type.AvroType;
 import files.FileHandler;
 import json.lexer.JsonLexer;
 import json.parser.JsonParser;
 import json.token.JsonToken;
-import json.type.JsonNode;
+import json.token.JsonTokenType;
 import json.type.complex.JsonObject;
 
+import java.util.LinkedList;
+
 /**
- * Created by splbap on 2017-10-29.
+ * Created by splbap on 2017-12-05.
  */
-public class JsonParserTest {
+public class AvroAnalyzerTest {
 
     private final String RESET = "\u001B[0m";
     private final String RED = "\u001B[31m";
@@ -19,19 +23,12 @@ public class JsonParserTest {
     private final String BLUE = "\u001B[34m";
 
     public static void main(String[] args) {
-        JsonParserTest jsonParserTest = new JsonParserTest();
-        jsonParserTest.test();
+        AvroAnalyzerTest avroAnalyzerTest = new AvroAnalyzerTest();
+        avroAnalyzerTest.test();
     }
 
     public void test() {
-        testCase(1, "object", true);
-        testCase(1, "member", true);
-        testCase(1, "pair", true);
-        testCase(1, "array", true);
-        testCase(1, "element", true);
-        testCase(1, "value", true);
-
-        testCase(6, "illegal", false);
+        testCase(8, "illegal", false);
     }
 
     private void testCase(int number, String type, boolean expectation) {
@@ -40,13 +37,16 @@ public class JsonParserTest {
             JsonToken jsonToken = null;
             boolean passed = expectation;
             String fileName = String.format("%s%d.txt", type, i);
-            FileHandler fileHandler = new FileHandler(String.format("tests/json/analyzer/%ss/%s", type, fileName));
+            FileHandler fileHandler = new FileHandler(String.format("tests/avro/analyzer/%ss/%s", type, fileName));
             JsonLexer jsonLexer = new JsonLexer(fileHandler);
             JsonParser jsonParser = new JsonParser(jsonLexer);
             JsonObject jsonObject = jsonParser.parseFile();
-            if (jsonObject == null) {
+            AvroAnalyzer avroAnalyzer = new AvroAnalyzer(jsonObject);
+            LinkedList<AvroType> javaClasses = avroAnalyzer.analyzeFile();
+            if (javaClasses == null) {
                 passed = !expectation;
             }
+
             String COLOR = passed ? BLUE : RED;
             String result = passed ? "SUCCESS" : "FAILURE";
             System.out.println(String.format("Result of %d. %s test case: %s%s%s", i, type, COLOR, result, RESET));
@@ -54,4 +54,5 @@ public class JsonParserTest {
         }
         System.out.println();
     }
+
 }

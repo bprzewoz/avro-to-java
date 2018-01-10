@@ -1,5 +1,9 @@
 package json.type.complex;
 
+import exceptions.InvalidSchemaException;
+import json.type.primitive.JsonString;
+
+import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
@@ -43,7 +47,19 @@ public class JsonObject extends JsonValue {
         }
     }
 
-    public <T> T getAttribute(String key, Class<T> tClass, boolean required) throws Exception {
+    public JsonString getNameAttribute() throws InvalidSchemaException {
+        return getAttribute("name", JsonString.class, false);
+    }
+
+    public JsonString getAttribute(String key) throws InvalidSchemaException {
+        return getAttribute(key, JsonString.class, false);
+    }
+
+    public <T> T getAttribute(String key, Class<T> tClass) throws InvalidSchemaException {
+        return getAttribute(key, tClass, false);
+    }
+
+    public <T> T getAttribute(String key, Class<T> tClass, boolean required) throws InvalidSchemaException {
         JsonPair jsonPair = getMember(key);
         if (jsonPair != null) {
             JsonValue jsonValue = jsonPair.getValue();
@@ -52,16 +68,30 @@ public class JsonObject extends JsonValue {
                 return t;
             } else {
                 if (required) {
-                    throw new Exception(); // WRONG TYPE
+                    throw new InvalidSchemaException(600, jsonValue, jsonValue.getClass().toString()); // WRONG TYPE
                 } else {
                     return null;
                 }
             }
         } else {
             if (required) {
-                throw new Exception(); // MISSING ATTRIBUTE
+                throw new InvalidSchemaException(700, this); // MISSING ATTRIBUTE
             } else {
                 return null;
+            }
+        }
+    }
+
+    public void checkPrimitiveAtrributes() throws InvalidSchemaException {
+        checkAttributes(new LinkedList<String>(Arrays.asList("type", "name", "default")));
+    }
+
+    public void checkAttributes(LinkedList<String> attributes) throws InvalidSchemaException {
+        for (JsonPair jsonPair : getMembers()) {
+            if (attributes.contains(jsonPair.getKey())) {
+                attributes.remove(jsonPair.getKey());
+            } else {
+                throw new InvalidSchemaException(800, jsonPair, jsonPair.getKey());
             }
         }
     }

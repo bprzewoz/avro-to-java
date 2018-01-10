@@ -31,7 +31,23 @@ public class AvroField {
 
     public void printNode(int depth) {
         String tab = new String(new char[depth]).replace("\0", "\t");
-        System.out.println(String.format("%s%s - %s", tab, name, this.getType().getClass().getSimpleName()));
+        System.out.println(String.format("%s%s - %s", tab, name, type.getClass().getSimpleName()));
+    }
+
+    public String getJavaDeclaration() {
+        return String.format("\tprivate %s %s%s;", type.getJavaType(), name, type.getDefaultValue());
+    }
+
+    public String getJavaGetter() {
+        return String.format("\tpublic %s get%s() {\n\t\treturn %s;\n\t}\n", type.getJavaType(), capitalizeString(name), name);
+    }
+
+    public String getJavaSetter() {
+        return String.format("\tpublic void set%s(%s %s) {\n\t\tthis.%s = %s;\n\t}\n", capitalizeString(name), type.getJavaType(), name, name, name);
+    }
+
+    private String capitalizeString(String string) {
+        return string.substring(0, 1).toUpperCase() + string.substring(1);
     }
 
 }

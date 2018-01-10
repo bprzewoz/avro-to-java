@@ -7,21 +7,34 @@ import avro.type.AvroType;
  */
 public class AvroInt extends AvroType {
 
-    private int dflt;
+    private int value;
+    private String defaultValue;
 
-    public AvroInt(String dflt) {
-        if (dflt != null) {
-            this.dflt = Integer.parseInt(dflt);
+    public AvroInt(String defaultValue) {
+        this.defaultValue = defaultValue;
+        if (defaultValue != null) {
+            this.value = Integer.parseInt(defaultValue);
         }
     }
 
-    public int getDflt() {
-        return dflt;
+    public int getValue() {
+        return value;
     }
 
-    public void setDflt(int dflt) {
-        this.dflt = dflt;
+    public void setValue(int value) {
+        this.value = value;
     }
 
+    public String getDefaultValue() {
+        return defaultValue != null ? String.format(" = %s", defaultValue) : "";
+    }
+
+    public void setDefaultValue(String defaultValue){
+        this.defaultValue = defaultValue;
+    }
+
+    public String getJavaType() {
+        return "int";
+    }
 
 }
